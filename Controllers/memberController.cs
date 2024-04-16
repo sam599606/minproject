@@ -37,6 +37,11 @@ namespace minproject.Controllers.memberController
         [HttpPost("register")]
         public IActionResult Register([FromBody] member Register)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (_memberservice.repectAccount(Register.Account))
             {
                 string password = _memberservice.GetPassowrd();
@@ -57,6 +62,8 @@ namespace minproject.Controllers.memberController
             }
         }
         #endregion
+
+
         #region 登入
         [AllowAnonymous]
         [HttpPost("login")]

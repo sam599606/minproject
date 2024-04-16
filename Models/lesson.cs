@@ -1,10 +1,14 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using minproject.Models.member;
 
 namespace minproject.Models.lesson
 {
     public class lesson
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DisplayName("課程編號")]
         public int LessonID { get; set; }
         [DisplayName("老師帳號")]

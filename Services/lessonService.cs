@@ -13,7 +13,8 @@ namespace minproject.Services.lessonService
         #region 新增課程
         public void Insertlesson(lesson newlesson)
         {
-            string sql = @"INSERT INTO Lesson (Account,Type,Price,Content,Video,Year,CreateTime) VALUES (@Account,@Type,@Price,@Content,@Video,@Year,@CreateTime)";
+            string sql = @"INSERT INTO Lesson (Account, Type, Price, Content, Video, Year, CreateTime)
+                   VALUES (@Account, @Type, @Price, @Content, @Video, @Year, @CreateTime)";
             try
             {
                 conn.Open();
@@ -37,6 +38,7 @@ namespace minproject.Services.lessonService
             }
         }
         #endregion
+
         #region 查一筆資料
         public lesson GetDataById(int Id)
         {

@@ -15,6 +15,9 @@ namespace minproject.Models.member
         [StringLength(200, ErrorMessage = "Email不可超過200字")]
         [EmailAddress(ErrorMessage = "這不是Email格式")]
         public string? Email { get; set; }
+        [DisplayName("信箱驗證碼")]
+        [Required]
+        public string AuthCode { get; set; } = string.Empty;
         [DisplayName("身分")]
         public string? Role { get; set; }
         public bool? IsDelete { get; set; }
