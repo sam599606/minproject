@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using minproject.Services;
 using minproject.Services.JwtService;
 using minproject.Services.lessonService;
 using minproject.Services.MailService;
@@ -123,7 +124,7 @@ builder.Services.AddSingleton<MailService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<questionService>();
 builder.Services.AddSingleton<useransService>();
-
+builder.Services.AddSingleton<cartService>();
 
 
 var app = builder.Build();
