@@ -68,9 +68,12 @@ namespace minproject.Services
         #region 下單
         public void AddOrdersToBookSave(string account)
         {
-            string sql = @"INSERT INTO BookSave (BookID, Account) 
-            SELECT BookID, @Account 
-            FROM Book WHERE EndTime IS NOT NULL";
+            string sql = @"
+    INSERT INTO BookSave (BookID, Account)
+    SELECT BookID, @Account
+    FROM Book 
+    WHERE EndTime IS NULL
+";
             try
             {
                 conn.Open();

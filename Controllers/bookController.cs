@@ -20,7 +20,7 @@ namespace minproject.Controllers
 
         #region 加入購物車
         [AllowAnonymous]
-        [HttpPost("add-to-cart")]
+        [HttpPost("AddToCart")]
         public IActionResult AddToCart(int LessonID)
         {
             if (!ModelState.IsValid)
@@ -60,7 +60,8 @@ namespace minproject.Controllers
         #endregion
 
         #region 下訂單
-        [HttpPost("place-order")]
+        [AllowAnonymous]
+        [HttpPost("PlaceOrder")]
         public IActionResult PlaceOrder(string account)
         {
             try
