@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>小專</title>
+</head>
+<body style="background-color:#ededed" class="checkout">
+    <div class="header">
+        <div class="header-left">
+            <label for="sidebar-active" style="cursor: pointer;">
+                <img src="./image/sidebar-button.png">
+            </label>
+            <h1>網站名稱</h1>
+        </div>
+        <div class="header-user">
+                <a href="../註冊/index.html">註冊</a>
+                <a href="../登入/index.html">登入</a>           
+            <div class="header-icon">
+                <a href="../會員資料/index.html">
+                    <img src="./image/User.png" alt="" height="40px">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="body-sidebar">
+        <input type="checkbox" name="" id="sidebar-active">
+        <div class="sidebar-content" id="sidebar-content">
+            <nav class = "sidebar close">
+                <div class = "menu-bar">
+                    <div class=" menu">
+                        <li class = "search-box">                      
+                            <i class='bx bx-search icon' ></i>
+                             <input type="search" placeholder="Search...">
+                        </li>
+                        <ul class = "menu-links">
+                            <li class = "nav-link">
+                                <a href = "../首頁/index.html"> 
+                                    <i class='bx bx-home-alt icon' ></i>
+                                    <span class ="text nav-text">首頁</span>
+                                </a>
+                            </li>
+                            <li class = "nav-link">
+                                <a href = "../學生-課程/index.html"> 
+                                    <i class='bx bx-book-open icon' ></i>
+                                    <span class ="text nav-text">課程</span>
+                                </a>
+                            </li>
+                            <li class = "nav-link">
+                                <a href = "../學生-試卷/index.html"> 
+                                    <i class='bx bx-calculator icon'></i>
+                                    <span class ="text nav-text">試卷</span>
+                                </a>
+                            </li>
+                            <li class = "nav-link">
+                                <a href = "#"> 
+                                    <i class='bx bx-log-out icon'></i>
+                                    <span class ="text nav-text">登出</span>
+                                </a>
+                            </li>  
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="main">
+        <div class="main-title">
+            訂購人資訊
+        </div>
+        <form action="">
+            <h3>姓名</h3>
+            <input type="text">
+            <h3>電子信箱</h3>
+            <input type="email">
+            <h3>聯絡電話</h3>
+            <input type="phone">
+            <h3>訂單備註</h3>
+            <textarea name="" id="" rows="10"></textarea>
+        </form>
+        <div class="main-btn">
+            <a class="checkout-btn" href="./購買課程.html">返回</a>
+            <a class="checkout-btn" href="">立即結帳</a>
+        </div>
+    </div>
+    <div class="footer">
+        <footer>&copy; Copyright 2024 HTML.am</footer>
+    </div>
+
+</body>
+</html>
