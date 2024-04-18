@@ -53,6 +53,7 @@ namespace minproject.Services.questionService
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
+                    Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
                     Data.Account = dr["Account"].ToString();
                     Data.Type = Convert.ToInt32(dr["Type"]);
                     Data.QuestionNum = Convert.ToInt32(dr["QuestionNum"]);
@@ -83,7 +84,7 @@ namespace minproject.Services.questionService
         #region 修改題目
         public void Editquestion(question Editquestion)
         {
-            string sql = @"UPDATE Questions SET Account=@Account,Type=@Type,QuestionNum=@QuestionNum,Content=@Content,Image=@Image,Answer=@Answer,Solution=@Solution,Year=@Year,EditTime=@EditTime WHERE QuestionID = @Id";
+            string sql = @"UPDATE Questions SET Account=@Account,QuestionNum=@QuestionNum,Type=@Type,Content=@Content,Image=@Image,Answer=@Answer,Solution=@Solution,Year=@Year,EditTime=@EditTime WHERE QuestionID = @Id";
             try
             {
                 conn.Open();
@@ -133,20 +134,22 @@ namespace minproject.Services.questionService
             }
         }
         #endregion
-        #region 透過科目取得試卷
-        public List<question> GetQuizByType(int Type)
+        #region 透過科目年分取得試卷
+        public List<question> GetQuizByType(question quiz)
         {
             List<question> DataList = new List<question>();
-            string sql = @"SELECT * FROM Questions WHERE Type LIKE @Type";
+            string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year";
             try
             {
+                question Data = new question();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Type", Type);
+                cmd.Parameters.AddWithValue("@Type", quiz.Type);
+                cmd.Parameters.AddWithValue("@Year", quiz.Year);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    question Data = new question();
+                    Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
                     Data.Account = dr["Account"].ToString();
                     Data.Type = Convert.ToInt32(dr["Type"]);
                     Data.QuestionNum = Convert.ToInt32(dr["QuestionNum"]);
@@ -176,52 +179,5 @@ namespace minproject.Services.questionService
 
         }
         #endregion
-        #region 透過年分取得試卷
-        public List<question> GetQuizByYear(int Year)
-        {
-            List<question> DataList = new List<question>();
-            string sql = @"SELECT * FROM Questions WHERE Year=@Year";
-            try
-            {
-                question Data = new question();
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Year", Year);
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
-                {
-                    Data.Account = dr["Account"].ToString();
-                    Data.Type = Convert.ToInt32(dr["Type"]);
-                    Data.QuestionNum = Convert.ToInt32(dr["QuestionNum"]);
-                    Data.Content = dr["Content"].ToString();
-                    Data.Image = dr["Image"].ToString();
-                    Data.Answer = dr["Answer"].ToString();
-                    Data.Solution = dr["Solution"].ToString();
-                    Data.Year = Convert.ToInt32(dr["Year"]);
-                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
-                    if (Data.EditTime != null)
-                    {
-                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
-                    }
-                    if (Data.IsDelete == false)
-                    {
-                        Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
-                    }
-                    DataList.Add(Data);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-            return DataList;
-
-        }
-        #endregion
-
     }
 }
