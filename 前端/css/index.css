@@ -63,6 +63,12 @@ body{
     align-items: center;
 }
 
+.header-icon img{
+    height: 40px;
+    width: 40px;
+    margin: 0 2px;
+}
+
 .header-icon a:hover{
     background-color: #034A8C;
 }
@@ -207,34 +213,25 @@ body{
     justify-content: center;
     align-items: center;
     width: 100vw;
-    margin-top: 38px;
+    margin-top: 60px;
 }
 
 .content-board{
-    background: url(../image/content-a.gif);
     width: 100vw;
-    height: 350px;
+    height: 500px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-.board-img{
-    display: flex;
-    justify-content: center;
-    width: 300px;
+    margin: 20px 0;
 }
 
 ul.slides{
-    width: 440px;
-    height: 295px;
+    width: 1400px;
+    height: 500px;
     list-style: none;
     position: relative;
     overflow: hidden;
     border-radius: 20px;
-    margin-top: -52px;
 }
 
 ul.slides input{
@@ -361,7 +358,7 @@ ul.slides label img{
     width: 300px;
     height: 400px;
     border-radius: 10px;
-    background-color: #e2e2e2;
+    background:linear-gradient( 45deg, white, #FFE0B1);
     display: flex;
     align-items: center;
     flex-direction: column;

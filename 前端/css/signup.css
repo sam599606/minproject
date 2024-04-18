@@ -63,6 +63,12 @@ body{
     align-items: center;
 }
 
+.header-icon img{
+    height: 40px;
+    width: 40px;
+    margin: 0 2px;
+}
+
 .header-icon a:hover{
     background-color: #034A8C;
 }
@@ -277,7 +283,7 @@ body{
     font-size: 24px;
     width: 150px;
     height: 60px;
-    margin-top: 30px;
+    margin-top: 20px;
     justify-content: center;
     border: none;
     float: center;

@@ -63,6 +63,12 @@ body{
     align-items: center;
 }
 
+.header-icon img{
+    height: 40px;
+    width: 40px;
+    margin: 0 2px;
+}
+
 .header-icon a:hover{
     background-color: #034A8C;
 }
@@ -210,11 +216,17 @@ body{
     margin-top: 60px;
 }
 
-.class-bar{
+.content-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: 20px;
     width: 1200px;
     border-bottom: solid white 10px;
+}
+
+.class-bar{    
     display: flex;
-    margin-top: 60px;
 }
 
 .class-bar a{
@@ -231,6 +243,13 @@ body{
     align-items: center;
     background-color: #d9d9d9;
     border-radius: 16px 16px 0 0;
+}
+
+.content-top button{
+    border: none;
+    color: white;
+    margin: 0 20px 20px 0;
+    cursor: pointer;
 }
 
 .test{
@@ -269,12 +288,6 @@ body{
     margin-right: 20px;
 }
 
-.block-right a{
-    text-decoration: none;
-    color: white;
-    margin: 0 10px;
-}
-
 .add{
     width: 100px;
     height: 60px;
@@ -285,6 +298,10 @@ body{
     background-color: #1FA84C;
     font-size: 24px;
     font-weight: bold;   
+    color: white;
+    margin: 0 10px;
+    border: none;
+    cursor: pointer;
 }
 
 .modi{

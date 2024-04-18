@@ -837,4 +837,3 @@ c:\Users\sam59\Desktop\minproject\obj\Debug\net7.0\refint\minproject.dll
 c:\Users\sam59\Desktop\minproject\obj\Debug\net7.0\minproject.pdb
 c:\Users\sam59\Desktop\minproject\obj\Debug\net7.0\minproject.genruntimeconfig.cache
 c:\Users\sam59\Desktop\minproject\obj\Debug\net7.0\ref\minproject.dll
-c:\Users\sam59\Desktop\minproject\bin\Debug\net7.0\前端\黃政諺\課程介紹\vscode\launch.json

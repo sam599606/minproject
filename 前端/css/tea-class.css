@@ -63,6 +63,12 @@ body{
     align-items: center;
 }
 
+.header-icon img{
+    height: 40px;
+    width: 40px;
+    margin: 0 2px;
+}
+
 .header-icon a:hover{
     background-color: #034A8C;
 }
@@ -207,13 +213,34 @@ body{
     justify-content: center;
     align-items: center;
     width: 100vw;
-    margin-top: 38px;
+    margin-top: 60px;
+}
+
+.add-button{
+    width: 1300px;
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+}
+
+button.add{
+    width: 120px;
+    height: 60px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1FA84C;
+    font-size: 24px; 
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 .body-class{
     display: flex;
     flex-wrap: wrap;
-    margin: 40px 0;
+    margin: 20px 0;
     width: 1400px;
 }
 
