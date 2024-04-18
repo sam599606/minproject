@@ -19,7 +19,7 @@ namespace minproject.Services.memberService
         public void Register(member newmember)
         {
             newmember.Password = HashPassword(newmember.Password);
-            string sql = @"INSERT INTO Members(Account,Password,Email,Role,IsDelete) VALUES (@Account,@Password,@Email,@Role,@IsDelete)";
+            string sql = @"INSERT INTO Members(Account,Password,Email,AuthCode,Role,IsDelete) VALUES (@Account,@Password,@Email,@AuthCode,@Role,@IsDelete)";
             try
             {
                 conn.Open();
@@ -29,6 +29,7 @@ namespace minproject.Services.memberService
                 cmd.Parameters.AddWithValue("@Email", newmember.Email);
                 cmd.Parameters.AddWithValue("@Role", newmember.Role);
                 cmd.Parameters.AddWithValue("@IsDelete", 0);
+                cmd.Parameters.AddWithValue("@AuthCode", newmember.AuthCode);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -42,6 +43,44 @@ namespace minproject.Services.memberService
             }
         }
         #endregion
+
+        #region 更新用户数据
+        public string UpdateUserData(member updatedMember)
+        {
+            member existingMember = GetDataByAccount(updatedMember.Account);
+
+            if (existingMember != null)
+            {
+                string sql = @"UPDATE Members SET Account = @Account, Password = @Password, Email = @Email, Role = @Role, IsDelete = @IsDelete, AuthCode = @Authcode WHERE Account = @Account";
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@Account", existingMember.Account);
+                    cmd.Parameters.AddWithValue("@Password", existingMember.Password);
+                    cmd.Parameters.AddWithValue("@Email", existingMember.Email);
+                    cmd.Parameters.AddWithValue("@Role", existingMember.Role);
+                    cmd.Parameters.AddWithValue("@IsDelete", existingMember.IsDelete);
+                    cmd.Parameters.AddWithValue("@AuthCode", existingMember.AuthCode);
+                    cmd.ExecuteNonQuery();
+                    return "";
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message.ToString());
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+            else
+            {
+                return "找不到要更新的使用者记录";
+            }
+        }
+        #endregion
+
         #region 給密碼
         public string GetPassowrd()
         {
@@ -99,6 +138,28 @@ namespace minproject.Services.memberService
             return Data;
         }
         #endregion
+
+        public void UpdateAuthCode(string Account)
+        {
+            string sql = @"UPDATE Members SET AuthCode = null WHERE Account = @Account";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Account", Account);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+
         #region 帳號重複
         public bool repectAccount(string Account)
         {

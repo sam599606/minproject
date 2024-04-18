@@ -18,5 +18,9 @@ namespace minproject.Models.member
         [DisplayName("身分")]
         public string? Role { get; set; }
         public bool? IsDelete { get; set; }
+
+        [DisplayName("信箱驗證碼")]
+        [Required]
+        public string AuthCode { get; set; } = string.Empty;
     }
 }

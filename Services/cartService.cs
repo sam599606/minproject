@@ -35,7 +35,6 @@ namespace minproject.Services
             finally
             {
                 conn.Close();
-
             }
         }
         #endregion
