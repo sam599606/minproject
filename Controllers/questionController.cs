@@ -5,6 +5,7 @@ using minproject.Models.member;
 using minproject.Models.question;
 using minproject.Services.memberService;
 using minproject.Services.questionService;
+using minproject.ViewModels.addquestion;
 
 namespace minproject.Controllers.questionController
 {
@@ -23,13 +24,28 @@ namespace minproject.Controllers.questionController
         #region 新增題目
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("create")]
-        public IActionResult Createquestion(question create)
+        public async Task<IActionResult> CreatequestionAsync(addquestion create)
         {
-            member createmember = _memberservice.GetDataByAccount(create.Account);
+            member createmember = _memberservice.GetDataByAccount(create.newquestion.Account);
             if (createmember != null)
             {
-                _questionservice.Insertquestion(create);
-                return Ok("新增成功");
+                if (create.Image != null)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetFileName(create.Image.FileName);
+                    var path = Path.Combine("~/questionimg", fileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await create.Image.CopyToAsync(stream);
+                    }
+                    create.newquestion.Image = fileName;
+                    _questionservice.Insertquestion(create.newquestion);
+                    return Ok("新增成功");
+                }
+                else
+                {
+                    _questionservice.Insertquestion(create.newquestion);
+                    return Ok("新增成功");
+                }
             }
             else
             {
@@ -88,7 +104,12 @@ namespace minproject.Controllers.questionController
             }
         }
         #endregion
-        #region  透過年份取得試卷
+        #region  透過科目年份取得試卷
+        public IActionResult GetQuiz(question quiz)
+        {
+            List<question> datalist = _questionservice.GetQuiz(quiz);
+            return Ok(datalist);
+        }
         #endregion
     }
 }
