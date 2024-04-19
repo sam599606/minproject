@@ -44,7 +44,7 @@ namespace minproject.Services.memberService
         }
         #endregion
 
-        #region 更新用户数据
+        #region 更新使用者資料
         public string UpdateUserData(member updatedMember)
         {
             member existingMember = GetDataByAccount(updatedMember.Account);
@@ -111,7 +111,7 @@ namespace minproject.Services.memberService
         #region 查一筆資料
         public member GetDataByAccount(string Account)
         {
-            member Data = new member();
+            member Data = null;
             string sql = @"SELECT * FROM Members WHERE Account = @Account";
             try
             {
@@ -119,12 +119,17 @@ namespace minproject.Services.memberService
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Account", Account);
                 SqlDataReader dr = cmd.ExecuteReader();
-                dr.Read();
-                Data.Account = dr["Account"].ToString();
-                Data.Password = dr["Password"].ToString();
-                Data.Email = dr["Email"].ToString();
-                Data.Role = dr["Role"].ToString();
-                Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
+                if (dr.Read()) // 檢查是否找到符合條件的資料
+                {
+                    Data = new member();
+                    Data.Account = dr["Account"].ToString();
+                    Data.Password = dr["Password"].ToString();
+                    Data.Email = dr["Email"].ToString();
+                    Data.Role = dr["Role"].ToString();
+                    Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
+                    Data.AuthCode = dr["AuthCode"].ToString();
+                }
+
                 dr.Close();
             }
             catch
