@@ -88,7 +88,12 @@ namespace minproject.Controllers.questionController
             }
         }
         #endregion
-        #region  透過年份取得試卷
+        #region  透過科目年份取得試卷
+        public IActionResult GetQuiz(question quiz)
+        {
+            List<question> datalist = _questionservice.GetQuiz(quiz);
+            return Ok(datalist);
+        }
         #endregion
     }
 }

@@ -135,7 +135,7 @@ namespace minproject.Services.questionService
         }
         #endregion
         #region 透過科目年分取得試卷
-        public List<question> GetQuizByType(question quiz)
+        public List<question> GetQuiz(question quiz)
         {
             List<question> DataList = new List<question>();
             string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year";
@@ -164,7 +164,10 @@ namespace minproject.Services.questionService
                         Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
                     }
                     Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
-                    DataList.Add(Data);
+                    if (Data.IsDelete == false)
+                    {
+                        DataList.Add(Data);
+                    }
                 }
             }
             catch (Exception e)
