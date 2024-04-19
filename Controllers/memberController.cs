@@ -103,33 +103,6 @@ namespace minproject.Controllers.memberController
         }
         #endregion
 
-
-        // #region 註冊
-        // [AllowAnonymous]
-        // [HttpPost("register")]
-        // public IActionResult Register([FromBody] member Register)
-        // {
-        //     if (_memberservice.repectAccount(Register.Account))
-        //     {
-        //         string password = _memberservice.GetPassowrd();
-        //         Register.Password = password;
-        //         _memberservice.Register(Register);
-        //         string toMail = Register.Email;
-        //         string templPath = Path.Combine("RegisterEmail.html");
-        //         string mailTemplate = System.IO.File.ReadAllText(templPath);
-        //         string userPassword = password;
-        //         string userName = Register.Account;
-        //         string mailBody = _mailservice.GetMailBody(mailTemplate, userName, userPassword);
-        //         _mailservice.SendRegisterMail(mailBody, toMail);
-        //         return Ok("註冊成功請去收信");
-        //     }
-        //     else
-        //     {
-        //         return BadRequest("此帳號已被註冊");
-        //     }
-        // }
-        // #endregion
-
         #region 登入
         [AllowAnonymous]
         [HttpPost("login")]
