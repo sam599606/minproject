@@ -175,6 +175,8 @@ namespace minproject.Controllers.memberController
             }
         }
         #endregion
+
+
         #region 登出
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("logout")]

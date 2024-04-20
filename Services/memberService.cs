@@ -176,6 +176,7 @@ namespace minproject.Services.memberService
         public string Logincheck(string Account, string Password)
         {
             member Loginmember = GetDataByAccount(Account);
+            Password = HashPassword(Password);
             if (Loginmember != null)
             {
                 if (PasswordCheck(Loginmember, Password))
@@ -235,10 +236,11 @@ namespace minproject.Services.memberService
         #region 忘記密碼
         public string ForgetPassword(member forgrtmember, string Email, string Password)
         {
+            member themember = GetDataByAccount(forgrtmember.Account);
             string HashData = HashPassword(Password);
             if (forgrtmember != null)
             {
-                if (Email == forgrtmember.Email)
+                if (Email == themember.Email)
                 {
                     string sql = @"UPDATE Members SET Password = @Password WHERE Account = @Account";
                     try

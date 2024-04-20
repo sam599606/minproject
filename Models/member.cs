@@ -9,9 +9,11 @@ namespace minproject.Models.member
         [Required(ErrorMessage = "請輸入帳號")]
         [StringLength(30, ErrorMessage = "帳號不可超過30字")]
         public string Account { get; set; }
+        [Required(ErrorMessage = "請輸入密碼")]
         [DisplayName("密碼")]
         public string? Password { get; set; }
         [DisplayName("Email")]
+        [Required(ErrorMessage = "請輸入Email")]
         [StringLength(200, ErrorMessage = "Email不可超過200字")]
         [EmailAddress(ErrorMessage = "這不是Email格式")]
         public string? Email { get; set; }
@@ -20,7 +22,6 @@ namespace minproject.Models.member
         public bool? IsDelete { get; set; }
 
         [DisplayName("信箱驗證碼")]
-        [Required]
         public string AuthCode { get; set; } = string.Empty;
     }
 }
