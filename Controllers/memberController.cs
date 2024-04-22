@@ -10,6 +10,7 @@ using minproject.Models.member;
 using minproject.Services.JwtService;
 using minproject.Services.MailService;
 using minproject.Services.memberService;
+using minproject.ViewModels;
 using minproject.ViewModels.changepasswordModel;
 
 namespace minproject.Controllers.memberController
@@ -82,10 +83,6 @@ namespace minproject.Controllers.memberController
 
             if (user != null)
             {
-                Console.WriteLine($"user: {user}");
-                Console.WriteLine($"user.AuthCode: {user.AuthCode}");
-                Console.WriteLine($"AuthCode: {AuthCode}");
-
                 if (user.AuthCode == AuthCode)
                 {
                     _memberservice.UpdateAuthCode(Account);
@@ -106,10 +103,16 @@ namespace minproject.Controllers.memberController
         #region 登入
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] member Login)
+        public IActionResult Login([FromBody] LoginViewModel Login)
         {
-            string Loginstr = _memberservice.Logincheck(Login.Account, Login.Password);
             member members = _memberservice.GetDataByAccount(Login.Account);
+
+            if (members != null && !string.IsNullOrEmpty(members.AuthCode))
+            {
+                return BadRequest("請先到email進行驗證");
+            }
+
+            string Loginstr = _memberservice.Logincheck(Login.Account, Login.Password);
             if (string.IsNullOrEmpty(Loginstr))
             {
                 // return Token
@@ -153,19 +156,17 @@ namespace minproject.Controllers.memberController
         [AllowAnonymous]
         [HttpPost("forgetpassword")]
         #region 忘記密碼
-        public IActionResult ForgetPassword(member Forget)
+        public IActionResult ForgetPassword(ForgetPasswordViewModel Forget)
         {
-            string password = _memberservice.GetPassowrd();
-            string forgetstr = _memberservice.ForgetPassword(Forget, Forget.Email, password);
+            string newpassword = _memberservice.GetPassowrd();//123
+            string forgetstr = _memberservice.ForgetPassword(Forget, Forget.Email, newpassword);//123
             if (string.IsNullOrEmpty(forgetstr))
             {
-                Forget.Password = password;
                 string toMail = Forget.Email;
                 string templPath = Path.Combine("ForgetPassword.html");
                 string mailTemplate = System.IO.File.ReadAllText(templPath);
-                string userPassword = password;
                 string userName = Forget.Account;
-                string mailBody = _mailservice.GetMailBody(mailTemplate, userName, userPassword);
+                string mailBody = _mailservice.GetMailBody(mailTemplate, userName, newpassword);//123
                 _mailservice.SendRegisterMail(mailBody, toMail);
                 return Ok("已將新密碼發送至信箱");
             }
@@ -173,9 +174,9 @@ namespace minproject.Controllers.memberController
             {
                 return BadRequest(forgetstr);
             }
+
         }
         #endregion
-
 
         #region 登出
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -192,7 +193,6 @@ namespace minproject.Controllers.memberController
                 return Ok("登出成功");
             }
         }
-
         #endregion
     }
 }

@@ -83,25 +83,32 @@ namespace minproject.Controllers.useransController
         }
         #endregion
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("start")]
-        public IActionResult StartExam(int type, int year)
+        #region 開始測驗
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("StartQuiz")]
+        public IActionResult StartQuiz(string account, int type, int year)
         {
-            string account = HttpContext.User.Identity.Name;
-            _useransservice.ClearUserAnswers();
-            List<question> questions = _questionservice.GetQuestionsByTypeAndYear(type, year, account);
-            // foreach (var q in questions)
-            // {
-            //     userans userAnswerRecord = new userans
-            //     {
-            //         QuestionID = q.QuestionID,
-            //         Account = account
-            //     };
+            // 檢查使用者是否存在
+            member user = _memberservice.GetDataByAccount(account);
+            if (user == null)
+            {
+                return BadRequest("無此帳號");
+            }
 
-            //     // 將記錄插入到 userans 資料表中
-            //     _useransservice.InsertUserAnswer(userAnswerRecord);
-            // }
-            return Ok("考試開始，題目已加載！");
+            // 取得該年份、科目的題目列表
+            List<question> questions = _questionservice.GetQuiz(type, year);
+
+            // 如果有題目，則回傳題目列表，否則回傳無題目的訊息
+            if (questions.Count > 0)
+            {
+                return Ok(questions);
+            }
+            else
+            {
+                return NotFound("找不到任何題目");
+            }
         }
+        #endregion
+
     }
 }

@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using minproject.Models.member;
+using minproject.ViewModels;
 using minproject.ViewModels.changepasswordModel;
 
 namespace minproject.Services.memberService
@@ -18,7 +19,6 @@ namespace minproject.Services.memberService
         #region 註冊方法
         public void Register(member newmember)
         {
-            newmember.Password = HashPassword(newmember.Password);
             string sql = @"INSERT INTO Members(Account,Password,Email,AuthCode,Role,IsDelete) VALUES (@Account,@Password,@Email,@AuthCode,@Role,@IsDelete)";
             try
             {
@@ -76,7 +76,7 @@ namespace minproject.Services.memberService
             }
             else
             {
-                return "找不到要更新的使用者记录";
+                return "找不到要更新的使用者紀錄";
             }
         }
         #endregion
@@ -172,11 +172,12 @@ namespace minproject.Services.memberService
             return (checkmember == null);
         }
         #endregion
-        #region  登入
+        #region 登入
         public string Logincheck(string Account, string Password)
         {
             member Loginmember = GetDataByAccount(Account);
             Password = HashPassword(Password);
+
             if (Loginmember != null)
             {
                 if (PasswordCheck(Loginmember, Password))
@@ -194,26 +195,27 @@ namespace minproject.Services.memberService
             }
         }
         #endregion
+
         #region 密碼確認
         public bool PasswordCheck(member checkmember, string Password)
         {
-            bool result = checkmember.Password.Equals(HashPassword(Password));
+            bool result = checkmember.Password.Equals(Password);
             return result;
         }
         #endregion
         #region 更改密碼
         public string ChangePassword(string Account, string Password, string newPassword)
         {
+            Password = HashPassword(Password);
             member changemember = GetDataByAccount(Account);
             if (PasswordCheck(changemember, Password))
             {
-                changemember.Password = HashPassword(newPassword);
                 string sql = @"UPDATE Members SET Password = @Password WHERE Account = @Account";
                 try
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@Password", changemember.Password);
+                    cmd.Parameters.AddWithValue("@Password", HashPassword(newPassword));
                     cmd.Parameters.AddWithValue("@Account", Account);
                     cmd.ExecuteNonQuery();
                 }
@@ -233,15 +235,18 @@ namespace minproject.Services.memberService
             }
         }
         #endregion
+
         #region 忘記密碼
-        public string ForgetPassword(member forgrtmember, string Email, string Password)
+        public string ForgetPassword(ForgetPasswordViewModel forgrtmember, string Email, string Password)
         {
             member themember = GetDataByAccount(forgrtmember.Account);
-            string HashData = HashPassword(Password);
-            if (forgrtmember != null)
+
+            if (themember != null)
             {
                 if (Email == themember.Email)
                 {
+                    string HashData = HashPassword(Password);
+
                     string sql = @"UPDATE Members SET Password = @Password WHERE Account = @Account";
                     try
                     {
@@ -259,6 +264,11 @@ namespace minproject.Services.memberService
                     {
                         conn.Close();
                     }
+
+                    // 更新 member 对象中的密码字段
+                    themember.Password = HashData;
+
+                    Console.WriteLine($"user: {HashData}");
                     return "";
                 }
                 else
@@ -270,8 +280,9 @@ namespace minproject.Services.memberService
             {
                 return "無此帳號，請重新確認或註冊。";
             }
-
         }
         #endregion
+
+
     }
 }

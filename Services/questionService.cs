@@ -12,28 +12,7 @@ namespace minproject.Services.questionService
             conn = connection;
         }
 
-        private void InsertUserAnswer(userans userAnswerRecord)
-        {
-            string sql = @"INSERT INTO UserAnswer (QuestionID, Account) VALUES (@QuestionID, @Account)";
-            try
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@QuestionID", userAnswerRecord.QuestionID);
-                    cmd.Parameters.AddWithValue("@Account", userAnswerRecord.Account);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
+
 
         #region 新增題目
         public void Insertquestion(question newquestion)
@@ -159,8 +138,9 @@ namespace minproject.Services.questionService
             }
         }
         #endregion
+
         #region 透過科目年分取得試卷
-        public List<question> GetQuiz(question quiz)
+        public List<question> GetQuiz(int type, int year)
         {
             List<question> DataList = new List<question>();
             string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year";
@@ -169,8 +149,8 @@ namespace minproject.Services.questionService
                 question Data = new question();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Type", quiz.Type);
-                cmd.Parameters.AddWithValue("@Year", quiz.Year);
+                cmd.Parameters.AddWithValue("@Type", type);
+                cmd.Parameters.AddWithValue("@Year", year);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -204,61 +184,32 @@ namespace minproject.Services.questionService
                 conn.Close();
             }
             return DataList;
-
         }
         #endregion
 
-        #region 取得考題資料
-        public List<question> GetQuestionsByTypeAndYear(int type, int year, string account)
+
+
+        private void InsertUserAnswer(userans userAnswerRecord)
         {
-            List<question> questions = new List<question>();
-
-            string sql = @"SELECT * FROM Question WHERE Type = @Type AND Year = @Year";
-
+            string sql = @"INSERT INTO UserAnswer (QuestionID, Account) VALUES (@QuestionID, @Account)";
             try
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Type", type);
-                    cmd.Parameters.AddWithValue("@Year", year);
-
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        question q = new question
-                        {
-                            QuestionID = Convert.ToInt32(reader["QuestionID"]),
-                            Type = Convert.ToInt32(reader["Type"]),
-                            Year = Convert.ToInt32(reader["Year"]),
-                            Content = reader["Content"].ToString(),
-                            Image = reader["Image"].ToString(),
-                            Answer = reader["Answer"].ToString(),
-                            Solution = reader["Solution"].ToString(),
-                            CreateTime = Convert.ToDateTime(reader["CreateTime"]),
-                            EditTime = Convert.ToDateTime(reader["EditTime"]),
-                            IsDelete = Convert.ToBoolean(reader["IsDelete"])
-                        };
-                        questions.Add(q);
-                        InsertUserAnswer(new userans { QuestionID = q.QuestionID, Account = account });
-                    }
+                    cmd.Parameters.AddWithValue("@QuestionID", userAnswerRecord.QuestionID);
+                    cmd.Parameters.AddWithValue("@Account", userAnswerRecord.Account);
+                    cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                // 適當處理錯誤
-                Console.WriteLine("發生錯誤：" + ex.Message);
+                throw new Exception(e.Message.ToString());
             }
             finally
             {
                 conn.Close();
             }
-
-            return questions;
         }
-
-
-        #endregion
     }
 }

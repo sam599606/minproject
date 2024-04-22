@@ -108,7 +108,7 @@ namespace minproject.Controllers.questionController
         [HttpGet("GetQuiz")]
         public IActionResult GetQuiz([FromQuery] question quiz)
         {
-            List<question> datalist = _questionservice.GetQuiz(quiz);
+            List<question> datalist = _questionservice.GetQuiz(quiz.Type, quiz.Year);
             return Ok(datalist);
         }
         #endregion
