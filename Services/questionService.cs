@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using minproject.Models.question;
+using minproject.Models.userans;
 
 namespace minproject.Services.questionService
 {
@@ -10,6 +11,30 @@ namespace minproject.Services.questionService
         {
             conn = connection;
         }
+
+        private void InsertUserAnswer(userans userAnswerRecord)
+        {
+            string sql = @"INSERT INTO UserAnswer (QuestionID, Account) VALUES (@QuestionID, @Account)";
+            try
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@QuestionID", userAnswerRecord.QuestionID);
+                    cmd.Parameters.AddWithValue("@Account", userAnswerRecord.Account);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
         #region 新增題目
         public void Insertquestion(question newquestion)
         {
@@ -181,6 +206,59 @@ namespace minproject.Services.questionService
             return DataList;
 
         }
+        #endregion
+
+        #region 取得考題資料
+        public List<question> GetQuestionsByTypeAndYear(int type, int year, string account)
+        {
+            List<question> questions = new List<question>();
+
+            string sql = @"SELECT * FROM Question WHERE Type = @Type AND Year = @Year";
+
+            try
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Type", type);
+                    cmd.Parameters.AddWithValue("@Year", year);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        question q = new question
+                        {
+                            QuestionID = Convert.ToInt32(reader["QuestionID"]),
+                            Type = Convert.ToInt32(reader["Type"]),
+                            Year = Convert.ToInt32(reader["Year"]),
+                            Content = reader["Content"].ToString(),
+                            Image = reader["Image"].ToString(),
+                            Answer = reader["Answer"].ToString(),
+                            Solution = reader["Solution"].ToString(),
+                            CreateTime = Convert.ToDateTime(reader["CreateTime"]),
+                            EditTime = Convert.ToDateTime(reader["EditTime"]),
+                            IsDelete = Convert.ToBoolean(reader["IsDelete"])
+                        };
+                        questions.Add(q);
+                        InsertUserAnswer(new userans { QuestionID = q.QuestionID, Account = account });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 適當處理錯誤
+                Console.WriteLine("發生錯誤：" + ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return questions;
+        }
+
+
         #endregion
     }
 }

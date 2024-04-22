@@ -82,5 +82,26 @@ namespace minproject.Controllers.useransController
             }
         }
         #endregion
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("start")]
+        public IActionResult StartExam(int type, int year)
+        {
+            string account = HttpContext.User.Identity.Name;
+            _useransservice.ClearUserAnswers();
+            List<question> questions = _questionservice.GetQuestionsByTypeAndYear(type, year, account);
+            // foreach (var q in questions)
+            // {
+            //     userans userAnswerRecord = new userans
+            //     {
+            //         QuestionID = q.QuestionID,
+            //         Account = account
+            //     };
+
+            //     // 將記錄插入到 userans 資料表中
+            //     _useransservice.InsertUserAnswer(userAnswerRecord);
+            // }
+            return Ok("考試開始，題目已加載！");
+        }
     }
 }

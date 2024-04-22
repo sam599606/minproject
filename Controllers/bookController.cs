@@ -78,7 +78,11 @@ namespace minproject.Controllers
             {
                 return BadRequest($"訂單處理失敗: {e.Message}");
             }
-            #endregion
         }
+        #endregion
+
+        #region 查詢購物車內容
+
+        #endregion
     }
 }

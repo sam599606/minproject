@@ -94,6 +94,7 @@ namespace minproject.Services.useransService
             }
         }
         #endregion
+
         #region 確認使用者是否答對
         public string trueORflase(userans check)
         {
@@ -106,6 +107,28 @@ namespace minproject.Services.useransService
             else
             {
                 return "答錯了";
+            }
+        }
+        #endregion
+
+        #region 清空資料
+        public void ClearUserAnswers()
+        {
+            string sql = @"DELETE FROM UserAnswer";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
             }
         }
         #endregion
