@@ -122,5 +122,46 @@ namespace minproject.Services.lessonService
             }
         }
         #endregion
+
+        #region 獲取所有課程
+        public List<lesson> GetAllLessons()
+        {
+            List<lesson> lessons = new List<lesson>();
+            string sql = @"SELECT * FROM Lesson";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    lesson Data = new lesson();
+                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.Type = Convert.ToInt32(dr["Type"]);
+                    Data.Price = Convert.ToInt32(dr["Price"]);
+                    Data.Content = dr["Content"].ToString();
+                    Data.Video = dr["Video"].ToString();
+                    Data.Year = Convert.ToInt32(dr["Year"]);
+                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                    if (Data.EditTime != null)
+                    {
+                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
+                    }
+                    lessons.Add(Data);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return lessons;
+        }
+        #endregion
+
     }
 }

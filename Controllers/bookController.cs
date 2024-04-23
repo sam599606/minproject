@@ -36,14 +36,15 @@ namespace minproject.Controllers
             }
         }
         #endregion
+
         #region 刪除一筆訂單
         [AllowAnonymous]
-        [HttpPost("RemoveFromCart")]
-        public IActionResult RemoveFromCart(Book remove)
+        [HttpDelete("RemoveFromCart/{bookId}")]
+        public IActionResult RemoveFromCart(int bookId)
         {
-            if (remove.BookID != null)
+            if (bookId != null)
             {
-                _cartService.RemoveFromCart(remove.BookID);
+                _cartService.RemoveFromCart(bookId);
                 return Ok("已從購物車中移除課程");
             }
             else
@@ -71,7 +72,26 @@ namespace minproject.Controllers
         #endregion
 
         #region 查詢購物車內容
+        [HttpGet("GetCartItems")]
+        public IActionResult GetCartItems()
+        {
+            try
+            {
+                var cartItems = _cartService.GetAllCartItems();
 
+                if (cartItems.Count == 0)
+                {
+                    return Ok("購物車無內容");
+                }
+
+                return Ok(cartItems);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("獲取購物車內容失敗：" + e.Message);
+            }
+        }
         #endregion
+
     }
 }

@@ -121,6 +121,46 @@ namespace minproject.Services
         }
         #endregion
 
+
+        #region 獲取所有購物車項目
+        public List<Book> GetAllCartItems()
+        {
+            List<Book> cartItems = new List<Book>();
+            string sql = @"SELECT * FROM Book WHERE StartTime IS NULL";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    Book cartItem = new Book
+                    {
+                        BookID = Convert.ToInt32(dr["BookID"]),
+                        LessonID = Convert.ToInt32(dr["LessonID"]),
+                        StartTime = Convert.ToDateTime(dr["StartTime"]),
+                        EndTime = Convert.ToDateTime(dr["EndTime"])
+                    };
+                    cartItems.Add(cartItem);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("獲取購物車項目失敗：" + e.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return cartItems;
+        }
+        #endregion
+
+
+
         // #region 查詢所有已購買課程
         // public List<Booksave> GetBooks(int Id)
         // {

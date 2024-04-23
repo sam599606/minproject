@@ -88,5 +88,23 @@ namespace minproject.Controllers.lessonController
             }
         }
         #endregion
+
+        #region 獲取所有課程
+        [AllowAnonymous]
+        [HttpGet("getAll")]
+        public IActionResult GetAllLessons()
+        {
+            var lessons = _lessonservice.GetAllLessons();
+            if (lessons != null && lessons.Any())
+            {
+                return Ok(lessons);
+            }
+            else
+            {
+                return NotFound("找不到任何課程");
+            }
+        }
+        #endregion
+
     }
 }

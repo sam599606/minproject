@@ -76,16 +76,16 @@ namespace minproject.Controllers.memberController
         [HttpGet]
         [AllowAnonymous]
         [Route("EmailValidate")]
-        public IActionResult EmailValidate(member validate)
+        public IActionResult EmailValidate(string Account, string AuthCode)
         {
 
-            member user = _memberservice.GetDataByAccount(validate.Account);
+            member user = _memberservice.GetDataByAccount(Account);
 
             if (user != null)
             {
-                if (user.AuthCode == validate.AuthCode)
+                if (user.AuthCode == AuthCode)
                 {
-                    _memberservice.UpdateAuthCode(validate.Account);
+                    _memberservice.UpdateAuthCode(Account);
                     return Ok("驗證成功");
                 }
                 else
