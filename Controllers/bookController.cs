@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,43 +19,36 @@ namespace minproject.Controllers
             _cartService = cartService;
         }
 
-        #region 加入購物車
-        [AllowAnonymous]
+        #region 加入一筆訂單
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
         [HttpPost("AddToCart")]
-        public IActionResult AddToCart(int LessonID)
+        public IActionResult AddToCart(Book add)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            bool result = _cartService.AddToCart(LessonID);
-
-            if (result)
-            {
-                return Ok("課程已成功加入購物車");
-            }
             else
             {
-                return BadRequest("無法將課程添加到購物車");
+                _cartService.AddToCart(add.LessonID);
+                return Ok("課程已成功加入購物車");
             }
         }
         #endregion
-
-        #region 從購物車中取出
+        #region 刪除一筆訂單
         [AllowAnonymous]
         [HttpPost("RemoveFromCart")]
-        public IActionResult RemoveFromCart(int BookID)
+        public IActionResult RemoveFromCart(Book remove)
         {
-            bool result = _cartService.RemoveFromCart(BookID);
-
-            if (result)
+            if (remove.BookID != null)
             {
-                return Ok("項目已從購物車中移除");
+                _cartService.RemoveFromCart(remove.BookID);
+                return Ok("已從購物車中移除課程");
             }
             else
             {
-                return BadRequest("無法從購物車中移除項目");
+                return BadRequest("購物車中無此課程");
             }
         }
         #endregion
@@ -62,21 +56,16 @@ namespace minproject.Controllers
         #region 下訂單
         [AllowAnonymous]
         [HttpPost("PlaceOrder")]
-        public IActionResult PlaceOrder(string account)
+        public IActionResult PlaceOrder(Booksave order)
         {
             try
             {
-                // 先將所有 Book 資料表中 EndTime 不為 Null 的資料寫入 BookSave 資料表中
-                _cartService.AddOrdersToBookSave(account);
-
-                // 接著進行訂單的寫入，即寫入 Book 資料表中的 StartTime 和 EndTime
-                _cartService.PlaceOrder();
-
-                return Ok("訂單已成功下單並處理");
+                _cartService.OrdersToBookSave(order);
+                return Ok("已購買課程，現在可以開始上課了");
             }
             catch (Exception e)
             {
-                return BadRequest($"訂單處理失敗: {e.Message}");
+                return BadRequest("購買失敗，請重新下單");
             }
         }
         #endregion
