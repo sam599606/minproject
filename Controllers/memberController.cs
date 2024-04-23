@@ -76,16 +76,16 @@ namespace minproject.Controllers.memberController
         [HttpGet]
         [AllowAnonymous]
         [Route("EmailValidate")]
-        public IActionResult EmailValidate(string Account, string AuthCode)
+        public IActionResult EmailValidate(member validate)
         {
 
-            member user = _memberservice.GetDataByAccount(Account);
+            member user = _memberservice.GetDataByAccount(validate.Account);
 
             if (user != null)
             {
-                if (user.AuthCode == AuthCode)
+                if (user.AuthCode == validate.AuthCode)
                 {
-                    _memberservice.UpdateAuthCode(Account);
+                    _memberservice.UpdateAuthCode(validate.Account);
                     return Ok("驗證成功");
                 }
                 else
@@ -139,9 +139,6 @@ namespace minproject.Controllers.memberController
         #region 變更密碼
         public IActionResult ChangePassword(changepasswordModel Change)
         {
-            // var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-            // return Ok(roleClaim);
-
             string changestr = _memberservice.ChangePassword(Change.Account, Change.Password, Change.newPassword);
             if (string.IsNullOrEmpty(changestr))
             {

@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using minproject.Models.question;
 using minproject.Models.userans;
+using OfficeOpenXml;
 
 namespace minproject.Services.questionService
 {
@@ -11,37 +12,68 @@ namespace minproject.Services.questionService
         {
             conn = connection;
         }
+        #region excel
+        public List<question> ImporQuestionFromExcel(string filePath)
+        {
+            List<question> questions = new List<question>();
 
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0]; // Assuming your data is in the first worksheet
 
+                for (int row = 7; row <= worksheet.Dimension.Rows; row++)
+                {
+                    var question = new question
+                    {
+                        Type = int.Parse(worksheet.Cells[row, 1].Value.ToString()),
+                        QuestionNum = int.Parse(worksheet.Cells[row, 2].Value.ToString()),
+                        Content = worksheet.Cells[row, 3].Value.ToString(),
+                        Image = worksheet.Cells[row, 4].Value.ToString(),
+                        Answer = worksheet.Cells[row, 5].Value.ToString(),
+                        Solution = worksheet.Cells[row, 6].Value.ToString(),
+                        Year = int.Parse(worksheet.Cells[row, 7].Value.ToString())
+                    };
 
+                    questions.Add(question);
+                }
+            }
+            return questions;
+        }
+        #endregion
         #region 新增題目
-        public void Insertquestion(question newquestion)
+        public void Insertquestion(List<question> newquestion)
         {
             string sql = @"INSERT INTO Questions (Account,Type,QuestionNum,Content,Image,Answer,Solution,Year,CreateTime,IsDelete) VALUES (@Account,@Type,@QuestionNum,@Content,@Image,@Answer,@Solution,@Year,@CreateTime,@IsDelete)";
-            try
+
+            foreach (var data in newquestion)
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Account", newquestion.Account);
-                cmd.Parameters.AddWithValue("@Type", newquestion.Type);
-                cmd.Parameters.AddWithValue("@QuestionNum", newquestion.QuestionNum);
-                cmd.Parameters.AddWithValue("@Content", newquestion.Content);
-                cmd.Parameters.AddWithValue("@Image", newquestion.Image);
-                cmd.Parameters.AddWithValue("@Answer", newquestion.Answer);
-                cmd.Parameters.AddWithValue("@Solution", newquestion.Solution);
-                cmd.Parameters.AddWithValue("@Year", newquestion.Year);
-                cmd.Parameters.AddWithValue("@CreateTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                cmd.Parameters.AddWithValue("@IsDelete", '0');
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@Account", data.Account);
+                    cmd.Parameters.AddWithValue("@Type", data.Type);
+                    cmd.Parameters.AddWithValue("@QuestionNum", data.QuestionNum);
+                    cmd.Parameters.AddWithValue("@Content", data.Content);
+                    cmd.Parameters.AddWithValue("@Image", data.Image);
+                    cmd.Parameters.AddWithValue("@Answer", data.Answer);
+                    cmd.Parameters.AddWithValue("@Solution", data.Solution);
+                    cmd.Parameters.AddWithValue("@Year", data.Year);
+                    cmd.Parameters.AddWithValue("@CreateTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                    cmd.Parameters.AddWithValue("@IsDelete", '0');
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message.ToString());
+                }
+                finally
+                {
+                    conn.Close();
+                }
             }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
+
+
         }
         #endregion
         #region 查一筆資料
@@ -138,9 +170,8 @@ namespace minproject.Services.questionService
             }
         }
         #endregion
-
         #region 透過科目年分取得試卷
-        public List<question> GetQuiz(int type, int year)
+        public List<question> GetQuiz(question quiz)
         {
             List<question> DataList = new List<question>();
             string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year";
@@ -149,8 +180,8 @@ namespace minproject.Services.questionService
                 question Data = new question();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Type", type);
-                cmd.Parameters.AddWithValue("@Year", year);
+                cmd.Parameters.AddWithValue("@Type", quiz.Type);
+                cmd.Parameters.AddWithValue("@Year", quiz.Year);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -184,32 +215,8 @@ namespace minproject.Services.questionService
                 conn.Close();
             }
             return DataList;
+
         }
         #endregion
-
-
-
-        private void InsertUserAnswer(userans userAnswerRecord)
-        {
-            string sql = @"INSERT INTO UserAnswer (QuestionID, Account) VALUES (@QuestionID, @Account)";
-            try
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@QuestionID", userAnswerRecord.QuestionID);
-                    cmd.Parameters.AddWithValue("@Account", userAnswerRecord.Account);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
     }
 }
