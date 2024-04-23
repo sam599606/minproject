@@ -1114,3 +1114,6 @@ c:\Users\sam59\Desktop\最新\minproject\obj\Debug\net7.0\minproject.pdb
 c:\Users\sam59\Desktop\最新\minproject\obj\Debug\net7.0\minproject.genruntimeconfig.cache
 c:\Users\sam59\Desktop\最新\minproject\obj\Debug\net7.0\ref\minproject.dll
 C:\Users\emma9\OneDrive\桌面\minproject\obj\Debug\net7.0\minproject.sourcelink.json
+c:\Users\sam59\Desktop\新增資料夾\minproject\bin\Debug\net7.0\EPPlus.dll
+c:\Users\sam59\Desktop\新增資料夾\minproject\bin\Debug\net7.0\Microsoft.IO.RecyclableMemoryStream.dll
+c:\Users\sam59\Desktop\新增資料夾\minproject\bin\Debug\net7.0\System.Xml.XPath.XmlDocument.dll

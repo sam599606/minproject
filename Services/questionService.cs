@@ -171,7 +171,7 @@ namespace minproject.Services.questionService
         }
         #endregion
         #region 透過科目年分取得試卷
-        public List<question> GetQuiz(question quiz)
+        public List<question> GetQuiz(int type, int year)
         {
             List<question> DataList = new List<question>();
             string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year";
@@ -180,8 +180,8 @@ namespace minproject.Services.questionService
                 question Data = new question();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Type", quiz.Type);
-                cmd.Parameters.AddWithValue("@Year", quiz.Year);
+                cmd.Parameters.AddWithValue("@Type", type);
+                cmd.Parameters.AddWithValue("@Year", year);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -215,7 +215,6 @@ namespace minproject.Services.questionService
                 conn.Close();
             }
             return DataList;
-
         }
         #endregion
     }

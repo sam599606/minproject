@@ -7,6 +7,7 @@ using minproject.Models.userans;
 using minproject.Services.memberService;
 using minproject.Services.questionService;
 using minproject.Services.useransService;
+using minproject.ViewModels;
 
 namespace minproject.Controllers.useransController
 {
@@ -86,19 +87,16 @@ namespace minproject.Controllers.useransController
         #region 開始測驗
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
         [HttpPost("StartQuiz")]
-        public IActionResult StartQuiz(string account, int type, int year)
+        public IActionResult StartQuiz(StartQuizViewModel Quiz)
         {
-            // 檢查使用者是否存在
-            member user = _memberservice.GetDataByAccount(account);
+            member user = _memberservice.GetDataByAccount(Quiz.Account);
             if (user == null)
             {
                 return BadRequest("無此帳號");
             }
 
-            // 取得該年份、科目的題目列表
-            List<question> questions = _questionservice.GetQuiz(type, year);
+            List<question> questions = _questionservice.GetQuiz(Quiz.Type, Quiz.Year);
 
-            // 如果有題目，則回傳題目列表，否則回傳無題目的訊息
             if (questions.Count > 0)
             {
                 return Ok(questions);
@@ -109,6 +107,7 @@ namespace minproject.Controllers.useransController
             }
         }
         #endregion
+
 
     }
 }

@@ -121,38 +121,38 @@ namespace minproject.Services
         }
         #endregion
 
-        #region 查詢所有已購買課程
-        public List<Booksave> GetBooks(int Id)
-        {
-            List<Booksave> DataList = new List<Booksave>();
-            string sql = @"SELECT * FROM BookSave m inner join Members d on m.Account = d.Account WHERE BookID =@BookID";
-            try
-            {
-                Booksave Data = new Booksave();
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@BookID",Id);
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
-                {
-                    Data.BookID = Convert.ToInt32(dr["BookID"]);
-                    Data.Account = dr["Account"].ToString();
-                    Data.book.LessonID = Convert.ToInt32(dr["LessonID"]);
-                    Data.book.StartTime = Convert.ToDateTime(dr["StartTime"]);
-                    Data.book.EndTime = Convert.ToDateTime(dr["EndTime"]);
-                    DataList.Add(Data);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-            return DataList;
-        }
-        #endregion
+        // #region 查詢所有已購買課程
+        // public List<Booksave> GetBooks(int Id)
+        // {
+        //     List<Booksave> DataList = new List<Booksave>();
+        //     string sql = @"SELECT * FROM BookSave m inner join Members d on m.Account = d.Account WHERE BookID =@BookID";
+        //     try
+        //     {
+        //         Booksave Data = new Booksave();
+        //         conn.Open();
+        //         SqlCommand cmd = new SqlCommand(sql, conn);
+        //         cmd.Parameters.AddWithValue("@BookID",Id);
+        //         SqlDataReader dr = cmd.ExecuteReader();
+        //         while (dr.Read())
+        //         {
+        //             Data.BookID = Convert.ToInt32(dr["BookID"]);
+        //             Data.Account = dr["Account"].ToString();
+        //             Data.book.LessonID = Convert.ToInt32(dr["LessonID"]);
+        //             Data.book.StartTime = Convert.ToDateTime(dr["StartTime"]);
+        //             Data.book.EndTime = Convert.ToDateTime(dr["EndTime"]);
+        //             DataList.Add(Data);
+        //         }
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         throw new Exception(e.Message.ToString());
+        //     }
+        //     finally
+        //     {
+        //         conn.Close();
+        //     }
+        //     return DataList;
+        // }
+        // #endregion
     }
 }
