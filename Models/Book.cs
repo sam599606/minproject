@@ -13,15 +13,14 @@ namespace minproject.Models
         public int BookID { get; set; }
 
         [DisplayName("課程ID")] //主鍵兼外來鍵，關聯至Lesson的主鍵
-        [Required]
         public int LessonID { get; set; }
+        public string? Account { get; set; }
 
         [DisplayName("開始訂閱時間")]
-        [Required]
         public DateTime? StartTime { get; set; }
 
         [DisplayName("訂閱結束時間")]
-        [Required]
         public DateTime? EndTime { get; set; }
+        public bool IsOpen { get; set; }
     }
 }

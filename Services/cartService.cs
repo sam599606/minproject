@@ -18,14 +18,16 @@ namespace minproject.Services
             conn = connection;
         }
         #region 加入一筆訂單
-        public void AddToCart(int LessonID)
+        public void AddToCart(int LessonID, string Account)
         {
-            string sql = @"INSERT INTO Book (LessonID) VALUES (@LessonID)";
+            string sql = @"INSERT INTO Book (Account,LessonID,IsOpen) VALUES (@Account,@LessonID,@IsOpen)";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@LessonID", LessonID);
+                cmd.Parameters.AddWithValue("@Account", Account);
+                cmd.Parameters.AddWithValue("@IsOpen", false);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -91,23 +93,18 @@ namespace minproject.Services
         }
         #endregion
 
-        #region 下單
-        public void OrdersToBookSave(Booksave order)
+        #region 下單(加入訂閱時間和結束時間)
+        public void OrdersToBook(int BookId)
         {
-            StringBuilder sql = new StringBuilder();
-            sql.AppendLine(@"INSERT INTO BookSave (BookID, Account) VALUES (@BookID, @Account)");
-            sql.AppendLine(@"UPDATE Book SET StartTime=@StartTime,EndTime=@EndTime WHERE BookID=@BookID");
-            //string sql = @"INSERT INTO BookSave (BookID, Account) SELECT BookID, @Account FROM Book  WHERE EndTime IS NULL";
+            string sql = @"UPDATE Book SET StartTime=@StartTime,EndTime=@EndTime,IsOpen=@IsOpen WHERE BookID=@BookID";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql.ToString(), conn);
-                cmd.Parameters.AddWithValue("@BookID", order.BookID);
-                cmd.Parameters.AddWithValue("@Account", order.Account);
-                // 下單時間
+                cmd.Parameters.AddWithValue("@BookID", BookId);
                 cmd.Parameters.AddWithValue("@StartTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                // 下單時間加一年
                 cmd.Parameters.AddWithValue("@EndTime", DateTime.Now.AddYears(1).ToString("yyyy-MM-dd HH:mm:ss"));
+                cmd.Parameters.AddWithValue("@IsOpen", true);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -120,79 +117,39 @@ namespace minproject.Services
             }
         }
         #endregion
-
-
-        #region 獲取所有購物車項目
-        public List<Book> GetAllCartItems()
+        #region 查詢已購買課程
+        public List<Book> GetBooks(Book order)
         {
-            List<Book> cartItems = new List<Book>();
-            string sql = @"SELECT * FROM Book WHERE StartTime IS NULL";
-
+            List<Book> DataList = new List<Book>();
+            string sql = @"SELECT * FROM Book WHERE IsOpen=@IsOpen";
             try
             {
+                Book Data = new Book();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@IsOpen", true);
                 SqlDataReader dr = cmd.ExecuteReader();
-
                 while (dr.Read())
                 {
-                    Book cartItem = new Book
-                    {
-                        BookID = Convert.ToInt32(dr["BookID"]),
-                        LessonID = Convert.ToInt32(dr["LessonID"]),
-                        StartTime = Convert.ToDateTime(dr["StartTime"]),
-                        EndTime = Convert.ToDateTime(dr["EndTime"])
-                    };
-                    cartItems.Add(cartItem);
+                    Data.BookID = Convert.ToInt32(dr["BookID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
+                    Data.StartTime = Convert.ToDateTime(dr["StartTime"]);
+                    Data.EndTime = Convert.ToDateTime(dr["EndTime"]);
+                    Data.IsOpen = Convert.ToBoolean(dr["IsOpen"]);
+                    DataList.Add(Data);
                 }
             }
             catch (Exception e)
             {
-                throw new Exception("獲取購物車項目失敗：" + e.Message);
+                throw new Exception(e.Message.ToString());
             }
             finally
             {
                 conn.Close();
             }
-
-            return cartItems;
+            return DataList;
         }
         #endregion
-
-
-
-        // #region 查詢所有已購買課程
-        // public List<Booksave> GetBooks(int Id)
-        // {
-        //     List<Booksave> DataList = new List<Booksave>();
-        //     string sql = @"SELECT * FROM BookSave m inner join Members d on m.Account = d.Account WHERE BookID =@BookID";
-        //     try
-        //     {
-        //         Booksave Data = new Booksave();
-        //         conn.Open();
-        //         SqlCommand cmd = new SqlCommand(sql, conn);
-        //         cmd.Parameters.AddWithValue("@BookID",Id);
-        //         SqlDataReader dr = cmd.ExecuteReader();
-        //         while (dr.Read())
-        //         {
-        //             Data.BookID = Convert.ToInt32(dr["BookID"]);
-        //             Data.Account = dr["Account"].ToString();
-        //             Data.book.LessonID = Convert.ToInt32(dr["LessonID"]);
-        //             Data.book.StartTime = Convert.ToDateTime(dr["StartTime"]);
-        //             Data.book.EndTime = Convert.ToDateTime(dr["EndTime"]);
-        //             DataList.Add(Data);
-        //         }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         throw new Exception(e.Message.ToString());
-        //     }
-        //     finally
-        //     {
-        //         conn.Close();
-        //     }
-        //     return DataList;
-        // }
-        // #endregion
     }
 }

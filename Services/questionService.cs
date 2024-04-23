@@ -15,13 +15,14 @@ namespace minproject.Services.questionService
         #region excel
         public List<question> ImporQuestionFromExcel(string filePath)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             List<question> questions = new List<question>();
 
             using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
                 var worksheet = package.Workbook.Worksheets[0]; // Assuming your data is in the first worksheet
 
-                for (int row = 7; row <= worksheet.Dimension.Rows; row++)
+                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
                     var question = new question
                     {
@@ -41,7 +42,7 @@ namespace minproject.Services.questionService
         }
         #endregion
         #region 新增題目
-        public void Insertquestion(List<question> newquestion)
+        public void Insertquestion(string Account,List<question> newquestion)
         {
             string sql = @"INSERT INTO Questions (Account,Type,QuestionNum,Content,Image,Answer,Solution,Year,CreateTime,IsDelete) VALUES (@Account,@Type,@QuestionNum,@Content,@Image,@Answer,@Solution,@Year,@CreateTime,@IsDelete)";
 
@@ -51,7 +52,7 @@ namespace minproject.Services.questionService
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@Account", data.Account);
+                    cmd.Parameters.AddWithValue("@Account", Account);
                     cmd.Parameters.AddWithValue("@Type", data.Type);
                     cmd.Parameters.AddWithValue("@QuestionNum", data.QuestionNum);
                     cmd.Parameters.AddWithValue("@Content", data.Content);
@@ -171,17 +172,18 @@ namespace minproject.Services.questionService
         }
         #endregion
         #region 透過科目年分取得試卷
-        public List<question> GetQuiz(int type, int year)
+        public List<question> GetQuiz(question quiz)
         {
             List<question> DataList = new List<question>();
-            string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year";
+            string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year and IsDelete=@IsDelete";
+            question Data = new question();
             try
             {
-                question Data = new question();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Type", type);
-                cmd.Parameters.AddWithValue("@Year", year);
+                cmd.Parameters.AddWithValue("@Type", quiz.Type);
+                cmd.Parameters.AddWithValue("@Year", quiz.Year);
+                cmd.Parameters.AddWithValue("@IsDelete", false);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -200,10 +202,7 @@ namespace minproject.Services.questionService
                         Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
                     }
                     Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
-                    if (Data.IsDelete == false)
-                    {
-                        DataList.Add(Data);
-                    }
+                    DataList.Add(Data);
                 }
             }
             catch (Exception e)

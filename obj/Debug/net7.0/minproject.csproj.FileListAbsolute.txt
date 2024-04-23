@@ -1117,3 +1117,6 @@ C:\Users\emma9\OneDrive\桌面\minproject\obj\Debug\net7.0\minproject.sourcelink
 c:\Users\sam59\Desktop\新增資料夾\minproject\bin\Debug\net7.0\EPPlus.dll
 c:\Users\sam59\Desktop\新增資料夾\minproject\bin\Debug\net7.0\Microsoft.IO.RecyclableMemoryStream.dll
 c:\Users\sam59\Desktop\新增資料夾\minproject\bin\Debug\net7.0\System.Xml.XPath.XmlDocument.dll
+C:\Users\emma9\OneDrive\桌面\minproject\bin\Debug\net7.0\EPPlus.dll
+C:\Users\emma9\OneDrive\桌面\minproject\bin\Debug\net7.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\emma9\OneDrive\桌面\minproject\bin\Debug\net7.0\System.Xml.XPath.XmlDocument.dll

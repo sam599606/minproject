@@ -24,14 +24,17 @@ namespace minproject.Controllers.memberController
         private readonly MailService _mailservice;
         private readonly JwtService _jwtservice;
         private readonly IWebHostEnvironment _env;
+        private readonly string account;
 
-        public memberController(IConfiguration configuration, memberService memberservice, MailService mailservice, JwtService jwtservice, IWebHostEnvironment env)
+        public memberController(IConfiguration configuration, memberService memberservice, MailService mailservice, JwtService jwtservice, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _memberservice = memberservice;
             _mailservice = mailservice;
             _jwtservice = jwtservice;
             _env = env;
+            account = httpContextAccessor.HttpContext.User.Identity.Name;
+
         }
 
         #region new註冊
@@ -139,7 +142,7 @@ namespace minproject.Controllers.memberController
         #region 變更密碼
         public IActionResult ChangePassword(changepasswordModel Change)
         {
-            string changestr = _memberservice.ChangePassword(Change.Account, Change.Password, Change.newPassword);
+            string changestr = _memberservice.ChangePassword(this.account, Change.Password, Change.newPassword);
             if (string.IsNullOrEmpty(changestr))
             {
                 return Ok("密碼更改成功");

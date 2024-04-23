@@ -124,14 +124,15 @@ namespace minproject.Services.lessonService
         #endregion
 
         #region 獲取所有課程
-        public List<lesson> GetAllLessons()
+        public List<lesson> GetLessons(string Account)
         {
             List<lesson> lessons = new List<lesson>();
-            string sql = @"SELECT * FROM Lesson";
+            string sql = @"SELECT * FROM Lesson Where Account =@Account";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Account", Account);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {

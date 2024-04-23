@@ -18,19 +18,22 @@ namespace minproject.Controllers.useransController
         private readonly useransService _useransservice;
         private readonly questionService _questionservice;
         private readonly memberService _memberservice;
+        private readonly string account;
 
-        public useransController(useransService useransservice, questionService questionservice, memberService memberservice)
+        public useransController(useransService useransservice, questionService questionservice, memberService memberservice, IHttpContextAccessor httpContextAccessor)
         {
             _useransservice = useransservice;
             _questionservice = questionservice;
             _memberservice = memberservice;
+            account = httpContextAccessor.HttpContext.User.Identity.Name;
+
         }
         #region 新增答案
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
         [HttpPost("create")]
         public IActionResult Createuserans(userans create)
         {
-            member createmember = _memberservice.GetDataByAccount(create.Account);
+            member createmember = _memberservice.GetDataByAccount(this.account);
             question createquestion = _questionservice.GetDataById(create.QuestionID);
             if (createmember != null)
             {
@@ -57,7 +60,7 @@ namespace minproject.Controllers.useransController
         {
             userans data = _useransservice.GetDataById(edit.UserAnsID);
             question editquestion = _questionservice.GetDataById(edit.QuestionID);
-            member editmember = _memberservice.GetDataByAccount(edit.Account);
+            member editmember = _memberservice.GetDataByAccount(this.account);
             if (editmember != null)
             {
                 if (editquestion != null)
@@ -89,13 +92,13 @@ namespace minproject.Controllers.useransController
         [HttpPost("StartQuiz")]
         public IActionResult StartQuiz(StartQuizViewModel Quiz)
         {
-            member user = _memberservice.GetDataByAccount(Quiz.Account);
+            member user = _memberservice.GetDataByAccount(this.account);
             if (user == null)
             {
                 return BadRequest("無此帳號");
             }
 
-            List<question> questions = _questionservice.GetQuiz(Quiz.Type, Quiz.Year);
+            List<question> questions = _questionservice.GetQuiz(Quiz.question);
 
             if (questions.Count > 0)
             {

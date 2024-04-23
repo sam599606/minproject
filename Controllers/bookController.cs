@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using minproject.Models;
+using minproject.Models.member;
 using minproject.Services;
+using minproject.Services.memberService;
 using minproject.ViewModels;
 
 namespace minproject.Controllers
@@ -12,11 +14,16 @@ namespace minproject.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
+        private readonly memberService _memberservice;
         private readonly cartService _cartService;
+        private readonly string account;
 
-        public BookController(cartService cartService)
+
+        public BookController(cartService cartService, memberService memberservice, IHttpContextAccessor httpContextAccessor)
         {
             _cartService = cartService;
+            _memberservice = memberservice;
+            account = httpContextAccessor.HttpContext.User.Identity.Name;
         }
 
         #region 加入一筆訂單
@@ -24,27 +31,18 @@ namespace minproject.Controllers
         [HttpPost("AddToCart")]
         public IActionResult AddToCart(Book add)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                _cartService.AddToCart(add.LessonID);
-                return Ok("課程已成功加入購物車");
-            }
+            _cartService.AddToCart(add.LessonID, this.account);
+            return Ok("課程已成功加入購物車");
         }
         #endregion
-
         #region 刪除一筆訂單
-        [AllowAnonymous]
-        [HttpDelete("RemoveFromCart/{bookId}")]
-        public IActionResult RemoveFromCart(int bookId)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("RemoveFromCart")]
+        public IActionResult RemoveFromCart(Book remove)
         {
-            if (bookId != null)
+            if (remove != null)
             {
-                _cartService.RemoveFromCart(bookId);
+                _cartService.RemoveFromCart(remove.BookID);
                 return Ok("已從購物車中移除課程");
             }
             else
@@ -53,45 +51,41 @@ namespace minproject.Controllers
             }
         }
         #endregion
-
         #region 下訂單
-        [AllowAnonymous]
-        [HttpPost("PlaceOrder")]
-        public IActionResult PlaceOrder(Booksave order)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("Order")]
+        public IActionResult Order(Book order)
         {
-            try
+            if (order != null)
             {
-                _cartService.OrdersToBookSave(order);
+                _cartService.OrdersToBook(order.BookID);
                 return Ok("已購買課程，現在可以開始上課了");
             }
-            catch (Exception e)
+            else
             {
-                return BadRequest("購買失敗，請重新下單");
+                return BadRequest("尚未選擇課程");
+
             }
         }
         #endregion
 
-        #region 查詢購物車內容
-        [HttpGet("GetCartItems")]
-        public IActionResult GetCartItems()
+        #region  查詢已購買課程
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("GetBooks")]
+        public IActionResult GetBooks([FromBody] Book order)
         {
-            try
+            List<Book> datalist = _cartService.GetBooks(order);
+            if (datalist != null)
             {
-                var cartItems = _cartService.GetAllCartItems();
-
-                if (cartItems.Count == 0)
-                {
-                    return Ok("購物車無內容");
-                }
-
-                return Ok(cartItems);
+                return Ok(datalist);
             }
-            catch (Exception e)
+            else
             {
-                return BadRequest("獲取購物車內容失敗：" + e.Message);
+                return BadRequest("沒有題目");
             }
         }
         #endregion
+
 
     }
 }
