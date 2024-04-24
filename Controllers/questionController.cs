@@ -25,7 +25,7 @@ namespace minproject.Controllers.questionController
             _memberservice = memberservice;
             account = httpContextAccessor.HttpContext.User.Identity.Name;
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("import")]
         public IActionResult ImportQuestion([FromForm] IFormFile file)
         {
@@ -112,7 +112,7 @@ namespace minproject.Controllers.questionController
         // }
         // #endregion
         #region 更新題目
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("edit")]
         public IActionResult Editquestion(question edit)
         {
@@ -144,8 +144,8 @@ namespace minproject.Controllers.questionController
         }
         #endregion
         #region  透過科目年份取得試卷
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
-        [HttpPost("GetQuiz")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("Quiz")]
         public IActionResult GetQuiz([FromBody] question quiz)
         {
             List<question> datalist = _questionservice.GetQuiz(quiz);

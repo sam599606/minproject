@@ -33,23 +33,15 @@ namespace minproject.Controllers.useransController
         [HttpPost("create")]
         public IActionResult Createuserans(userans create)
         {
-            member createmember = _memberservice.GetDataByAccount(this.account);
             question createquestion = _questionservice.GetDataById(create.QuestionID);
-            if (createmember != null)
+            if (createquestion != null)
             {
-                if (createquestion != null)
-                {
-                    _useransservice.Insertans(create);
-                    return Ok("新增成功");
-                }
-                else
-                {
-                    return BadRequest("無此題目");
-                }
+                _useransservice.Insertans(create, this.account);
+                return Ok("新增成功");
             }
             else
             {
-                return BadRequest("無此帳號");
+                return BadRequest("無此題目");
             }
         }
         #endregion
@@ -58,59 +50,59 @@ namespace minproject.Controllers.useransController
         [HttpPost("edit")]
         public IActionResult Edituserans(userans edit)
         {
-            userans data = _useransservice.GetDataById(edit.UserAnsID);
             question editquestion = _questionservice.GetDataById(edit.QuestionID);
-            member editmember = _memberservice.GetDataByAccount(this.account);
-            if (editmember != null)
+            if (editquestion != null)
             {
-                if (editquestion != null)
+                if (edit != null)
                 {
-                    if (data != null)
-                    {
-                        _useransservice.Editans(edit);
-                        return Ok("更新成功");
-                    }
-                    else
-                    {
-                        return BadRequest("無此答案");
-                    }
+                    _useransservice.Editans(edit);
+                    return Ok("更新成功");
                 }
                 else
                 {
-                    return BadRequest("無此題目");
+                    return BadRequest("無此答案");
                 }
             }
             else
             {
-                return BadRequest("無此帳號");
+                return BadRequest("無此題目");
             }
         }
         #endregion
-
-        #region 開始測驗
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
-        [HttpPost("StartQuiz")]
-        public IActionResult StartQuiz(StartQuizViewModel Quiz)
+        #region 對或錯
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("check")]
+        public IActionResult TrueOrFlase(userans check)
         {
-            member user = _memberservice.GetDataByAccount(this.account);
-            if (user == null)
+            string checkstr = _useransservice.trueORflase(check);
+            return Ok(checkstr);
+        }
+        #endregion
+        #region  取得使用者答案
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("GetAns")]
+        public IActionResult GetUserAns()
+        {
+            List<userans> datalist = _useransservice.GetUserAns(this.account);
+            if (datalist != null)
             {
-                return BadRequest("無此帳號");
-            }
-
-            List<question> questions = _questionservice.GetQuiz(Quiz.question);
-
-            if (questions.Count > 0)
-            {
-                return Ok(questions);
+                return Ok(datalist);
             }
             else
             {
-                return NotFound("找不到任何題目");
+                return NotFound("沒有作答紀錄");
             }
         }
         #endregion
-
+        #region 計算得分
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("GetScore")]
+        public IActionResult GetScore([FromBody] userans ans)
+        {
+            int score = _useransservice.GetScore(this.account);
+            return Ok(score);
+        }
+        #endregion
 
     }
 }

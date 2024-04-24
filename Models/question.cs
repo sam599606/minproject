@@ -21,7 +21,7 @@ namespace minproject.Models.question
         [DisplayName("題目正解")]
         public string? Answer { get; set; }
         [DisplayName("題目解析")]
-        public string Solution { get; set; }
+        public string? Solution { get; set; }
         [DisplayName("題目年分")]
         public int Year { get; set; }
         [DisplayName("題目新增時間")]

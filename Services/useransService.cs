@@ -19,7 +19,7 @@ namespace minproject.Services.useransService
             _questionservice = questionservice;
         }
         #region 新增答案
-        public void Insertans(userans newans)
+        public void Insertans(userans newans, string Account)
         {
             string sql = @"INSERT INTO UserAnswer (QuestionID,Account,UserAnswer) VALUES (@QuestionID,@Account,@UserAnswer)";
             try
@@ -27,7 +27,7 @@ namespace minproject.Services.useransService
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@QuestionID", newans.QuestionID);
-                cmd.Parameters.AddWithValue("@Account", newans.Account);
+                cmd.Parameters.AddWithValue("@Account", Account);
                 cmd.Parameters.AddWithValue("@UserAnswer", newans.UserAnswer);
                 cmd.ExecuteNonQuery();
             }
@@ -75,7 +75,7 @@ namespace minproject.Services.useransService
         #region 修改答案
         public void Editans(userans Editans)
         {
-            string sql = @"UPDATE UserAnswer SET UserAnswer=@UserAnswer WHERE UserAnsId = @Id";
+            string sql = @"UPDATE UserAnswer SET UserAnswer=@UserAnswer WHERE UserAnsID = @Id";
             try
             {
                 conn.Open();
@@ -98,29 +98,73 @@ namespace minproject.Services.useransService
         #region 確認使用者是否答對
         public string trueORflase(userans check)
         {
-            userans data = GetDataById(check.UserAnsID);
-            question question = _questionservice.GetDataById(check.QuestionID);
-            if (question.Answer == data.UserAnswer)
+            question que = _questionservice.GetDataById(check.QuestionID);
+            userans ans = GetDataById(check.UserAnsID);
+            if (que.Answer == ans.UserAnswer)
             {
-                return "答對了";
+                string sql = @"UPDATE UserAnswer SET TrueorFlase=@True WHERE UserAnsID = @Id";
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@True", true);
+                    cmd.Parameters.AddWithValue("@Id", check.UserAnsID);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message.ToString());
+                }
+                finally
+                {
+                    conn.Close();
+                }
+                return "答對";
             }
             else
             {
-                return "答錯了";
+                string sql = @"UPDATE UserAnswer SET TrueorFlase=@Flase WHERE UserAnsID = @Id";
+                try
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@Flase", false);
+                    cmd.Parameters.AddWithValue("@Id", check.UserAnsID);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message.ToString());
+                }
+                finally
+                {
+                    conn.Close();
+                }
+                return "答錯";
             }
         }
         #endregion
-
-        #region 清空資料
-        public void ClearUserAnswers()
+        #region 使用者答案清單
+        public List<userans> GetUserAns(string Account)
         {
-            string sql = @"DELETE FROM UserAnswer";
-
+            List<userans> datalist = new List<userans>();
+            userans Data = new userans();
+            string sql = @"SELECT * FROM UserAnswer Where Account =@Account";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@Account", Account);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    Data.UserAnsID = Convert.ToInt32(dr["UserAnsID"]);
+                    Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.UserAnswer = dr["UserAnswer"].ToString();
+                    Data.TrueorFlase = Convert.ToBoolean(dr["TrueorFlase"]);
+                    datalist.Add(Data);
+                }
             }
             catch (Exception e)
             {
@@ -130,7 +174,45 @@ namespace minproject.Services.useransService
             {
                 conn.Close();
             }
+            return datalist;
         }
         #endregion
+        #region 計算得分
+        public int GetScore(string Account)
+        {
+            List<userans> AnsList = GetUserAns(Account);
+            int trueCount = 0;
+            foreach (var ans in AnsList)
+            {
+                if (ans.TrueorFlase == true)
+                {
+                    trueCount++;
+                }
+            }
+            return trueCount;
+        }
+        #endregion
+
+        // #region 清空資料
+        // public void ClearUserAnswers()
+        // {
+        //     string sql = @"DELETE FROM UserAnswer";
+
+        //     try
+        //     {
+        //         conn.Open();
+        //         SqlCommand cmd = new SqlCommand(sql, conn);
+        //         cmd.ExecuteNonQuery();
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         throw new Exception(e.Message.ToString());
+        //     }
+        //     finally
+        //     {
+        //         conn.Close();
+        //     }
+        // }
+        // #endregion
     }
 }

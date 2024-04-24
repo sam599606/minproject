@@ -28,7 +28,7 @@ namespace minproject.Controllers.lessonController
         [HttpPost("create")]
         public IActionResult Createlesson(lesson create)
         {
-            _lessonservice.Insertlesson(create);
+            _lessonservice.Insertlesson(create, this.account);
             return Ok("新增成功");
         }
         #endregion
@@ -71,10 +71,10 @@ namespace minproject.Controllers.lessonController
         [HttpPost("GetLesson")]
         public IActionResult GetLessons()
         {
-            var lessons = _lessonservice.GetLessons(this.account);
-            if (lessons != null && lessons.Any())
+            List<lesson> datalist = _lessonservice.GetLessons(this.account);
+            if (datalist != null)
             {
-                return Ok(lessons);
+                return Ok(datalist);
             }
             else
             {

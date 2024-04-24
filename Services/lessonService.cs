@@ -11,14 +11,14 @@ namespace minproject.Services.lessonService
             conn = connection;
         }
         #region 新增課程
-        public void Insertlesson(lesson newlesson)
+        public void Insertlesson(lesson newlesson, string Account)
         {
             string sql = @"INSERT INTO Lesson (Account,Type,Price,Content,Video,Year,CreateTime) VALUES (@Account,@Type,@Price,@Content,@Video,@Year,@CreateTime)";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Account", newlesson.Account);
+                cmd.Parameters.AddWithValue("@Account", Account);
                 cmd.Parameters.AddWithValue("@Type", newlesson.Type);
                 cmd.Parameters.AddWithValue("@Price", newlesson.Price);
                 cmd.Parameters.AddWithValue("@Content", newlesson.Content);
@@ -126,7 +126,8 @@ namespace minproject.Services.lessonService
         #region 獲取所有課程
         public List<lesson> GetLessons(string Account)
         {
-            List<lesson> lessons = new List<lesson>();
+            List<lesson> lessonlist = new List<lesson>();
+            lesson Data = new lesson();
             string sql = @"SELECT * FROM Lesson Where Account =@Account";
             try
             {
@@ -136,7 +137,6 @@ namespace minproject.Services.lessonService
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    lesson Data = new lesson();
                     Data.LessonID = Convert.ToInt32(dr["LessonID"]);
                     Data.Account = dr["Account"].ToString();
                     Data.Type = Convert.ToInt32(dr["Type"]);
@@ -149,7 +149,7 @@ namespace minproject.Services.lessonService
                     {
                         Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
                     }
-                    lessons.Add(Data);
+                    lessonlist.Add(Data);
                 }
             }
             catch (Exception e)
@@ -160,7 +160,7 @@ namespace minproject.Services.lessonService
             {
                 conn.Close();
             }
-            return lessons;
+            return lessonlist;
         }
         #endregion
 

@@ -13,5 +13,7 @@ namespace minproject.Models.userans
         public string? Account { get; set; }
         [DisplayName("使用者答案")]
         public string? UserAnswer { get; set; }
+        [DisplayName("對和錯")]
+        public bool? TrueorFlase { get; set; }
     }
 }
