@@ -37,6 +37,43 @@ namespace minproject.Services.lessonService
             }
         }
         #endregion
+
+        #region 課程新增驗證
+        public bool CheckExistingLesson(int type, int year, string account)
+        {
+            bool isExist = false;
+            string sql = @"SELECT COUNT(*) FROM Lesson WHERE Type = @Type AND Year = @Year AND Account = @Account";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Type", type);
+                cmd.Parameters.AddWithValue("@Year", year);
+                cmd.Parameters.AddWithValue("@Account", account);
+
+                int count = (int)cmd.ExecuteScalar();
+                if (count > 0)
+                {
+                    isExist = true;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("檢查課程是否存在失敗：" + e.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return isExist;
+        }
+
+        #endregion
+
+
+
         #region 查一筆資料
         public lesson GetDataById(int Id)
         {
@@ -123,7 +160,7 @@ namespace minproject.Services.lessonService
         }
         #endregion
 
-        #region 獲取所有課程
+        #region 根據帳號獲取課程
         public List<lesson> GetLessons(string Account)
         {
             List<lesson> lessonlist = new List<lesson>();
@@ -161,6 +198,71 @@ namespace minproject.Services.lessonService
                 conn.Close();
             }
             return lessonlist;
+        }
+        #endregion
+
+        #region 重複檢查
+        public bool CheckExistingLesson(int type, int year)
+        {
+            string sql = @"SELECT COUNT(*) FROM Lesson WHERE Type = @Type AND Year = @Year";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Type", type);
+                cmd.Parameters.AddWithValue("@Year", year);
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        #endregion
+
+        #region 獲取所有課程
+        public List<lesson> GetAllLessons()
+        {
+            List<lesson> lessons = new List<lesson>();
+            string sql = "SELECT * FROM Lesson";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    lesson lessonItem = new lesson
+                    {
+                        LessonID = Convert.ToInt32(dr["LessonID"]),
+                        Account = dr["Account"].ToString(),
+                        Type = Convert.ToInt32(dr["Type"]),
+                        Price = Convert.ToInt32(dr["Price"]),
+                        Content = dr["Content"].ToString(),
+                        Video = dr["Video"].ToString(),
+                        Year = Convert.ToInt32(dr["Year"]),
+                        CreateTime = Convert.ToDateTime(dr["CreateTime"]),
+                        EditTime = dr["EditTime"] != DBNull.Value ? Convert.ToDateTime(dr["EditTime"]) : (DateTime?)null
+                    };
+                    lessons.Add(lessonItem);
+                }
+            }
+            catch (Exception e)
+            {
+                // 處理異常情況
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return lessons;
         }
         #endregion
 

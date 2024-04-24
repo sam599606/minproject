@@ -28,10 +28,17 @@ namespace minproject.Controllers.lessonController
         [HttpPost("create")]
         public IActionResult Createlesson(lesson create)
         {
+            bool isExist = _lessonservice.CheckExistingLesson(create.Type ?? 0, create.Year ?? 0, this.account);
+            if (isExist)
+            {
+                return BadRequest("已存在相同科目、年份和帳號的課程，無法新增。");
+            }
+
             _lessonservice.Insertlesson(create, this.account);
             return Ok("新增成功");
         }
         #endregion
+
         #region 更新課程
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("edit")]
@@ -39,6 +46,12 @@ namespace minproject.Controllers.lessonController
         {
             if (edit != null)
             {
+                bool isExist = _lessonservice.CheckExistingLesson(edit.Type ?? 0, edit.Year ?? 0, this.account);
+                if (isExist)
+                {
+                    return BadRequest("已存在相同科目、年份和帳號的課程，無法新增。");
+                }
+
                 _lessonservice.Editlesson(edit);
                 return Ok("更新成功");
             }
@@ -66,8 +79,8 @@ namespace minproject.Controllers.lessonController
         }
         #endregion
 
-        #region 獲取所有課程
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        #region 根據帳號獲取課程
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("GetLesson")]
         public IActionResult GetLessons()
         {
@@ -79,6 +92,30 @@ namespace minproject.Controllers.lessonController
             else
             {
                 return NotFound("沒有課程");
+            }
+        }
+        #endregion
+
+        #region 獲取所有課程
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("GetAllLessons")]
+        public IActionResult GetAllLessons()
+        {
+            try
+            {
+                var lessons = _lessonservice.GetAllLessons();
+                if (lessons != null && lessons.Any())
+                {
+                    return Ok(lessons);
+                }
+                else
+                {
+                    return NotFound("找不到任何課程");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("獲取課程失敗：" + e.Message);
             }
         }
         #endregion
