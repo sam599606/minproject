@@ -143,7 +143,7 @@ namespace minproject.Services.memberService
             return Data;
         }
         #endregion
-
+        #region 驗證碼
         public void UpdateAuthCode(string Account)
         {
             string sql = @"UPDATE Members SET AuthCode = null WHERE Account = @Account";
@@ -163,8 +163,7 @@ namespace minproject.Services.memberService
                 conn.Close();
             }
         }
-
-
+        #endregion
         #region 帳號重複
         public bool repectAccount(string Account)
         {
