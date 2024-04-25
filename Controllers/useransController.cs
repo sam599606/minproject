@@ -103,6 +103,6 @@ namespace minproject.Controllers.useransController
             return Ok(score);
         }
         #endregion
-
+        
     }
 }

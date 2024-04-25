@@ -256,7 +256,7 @@ namespace minproject.Services.lessonService
             }
             catch (Exception e)
             {
-                // 處理異常情況
+                throw new Exception(e.Message.ToString());
             }
             finally
             {

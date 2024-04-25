@@ -80,7 +80,7 @@ namespace minproject.Controllers.lessonController
         #endregion
 
         #region 根據帳號獲取課程
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("GetLesson")]
         public IActionResult GetLessons()
         {
@@ -101,21 +101,14 @@ namespace minproject.Controllers.lessonController
         [HttpPost("GetAllLessons")]
         public IActionResult GetAllLessons()
         {
-            try
+            var lessons = _lessonservice.GetAllLessons();
+            if (lessons != null && lessons.Any())
             {
-                var lessons = _lessonservice.GetAllLessons();
-                if (lessons != null && lessons.Any())
-                {
-                    return Ok(lessons);
-                }
-                else
-                {
-                    return NotFound("找不到任何課程");
-                }
+                return Ok(lessons);
             }
-            catch (Exception e)
+            else
             {
-                return BadRequest("獲取課程失敗：" + e.Message);
+                return NotFound("找不到任何課程");
             }
         }
         #endregion

@@ -118,16 +118,17 @@ namespace minproject.Services
         }
         #endregion
         #region 查詢已購買課程
-        public List<Book> GetBooks(Book order)
+        public List<Book> GetBooks(Book order, string Account)
         {
             List<Book> DataList = new List<Book>();
-            string sql = @"SELECT * FROM Book WHERE IsOpen=@IsOpen";
+            string sql = @"SELECT * FROM Book WHERE IsOpen=@IsOpen and Account=@Account";
             try
             {
                 Book Data = new Book();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@IsOpen", true);
+                cmd.Parameters.AddWithValue("@Account", Account);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {

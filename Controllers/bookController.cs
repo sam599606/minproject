@@ -74,7 +74,7 @@ namespace minproject.Controllers
         [HttpPost("GetBooks")]
         public IActionResult GetBooks([FromBody] Book order)
         {
-            List<Book> datalist = _cartService.GetBooks(order);
+            List<Book> datalist = _cartService.GetBooks(order, this.account);
             if (datalist != null)
             {
                 return Ok(datalist);
