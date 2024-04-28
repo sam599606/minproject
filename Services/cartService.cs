@@ -152,5 +152,42 @@ namespace minproject.Services
             return DataList;
         }
         #endregion
+
+        #region 獲取購物車內未結單物品
+        public List<Book> GetCartItems(string account)
+        {
+            List<Book> cartItems = new List<Book>();
+            string sql = @"SELECT * FROM Book WHERE Account = @Account AND EndTime IS NULL";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Account", account);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    Book data = new Book();
+                    data.BookID = Convert.ToInt32(dr["BookID"]);
+                    data.LessonID = Convert.ToInt32(dr["LessonID"]);
+                    data.Account = dr["Account"].ToString();
+                    data.StartTime = dr["StartTime"] != DBNull.Value ? Convert.ToDateTime(dr["StartTime"]) : (DateTime?)null;
+                    data.EndTime = dr["EndTime"] != DBNull.Value ? Convert.ToDateTime(dr["EndTime"]) : (DateTime?)null;
+                    data.IsOpen = Convert.ToBoolean(dr["IsOpen"]);
+                    cartItems.Add(data);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return cartItems;
+        }
+        #endregion
+
     }
 }

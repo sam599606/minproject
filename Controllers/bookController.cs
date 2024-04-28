@@ -86,6 +86,40 @@ namespace minproject.Controllers
         }
         #endregion
 
+        #region 查詢購物車內物品（帶分頁）
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("GetCart")]
+        public IActionResult GetCart(int NowPage = 1, int ItemNum = 5)
+        {
+            try
+            {
+                List<Book> cartItems = _cartService.GetCartItems(this.account);
+                cartItems = cartItems.Where(item => item.EndTime == null).ToList();
+
+                int totalItems = cartItems.Count;
+                int MaxPage = (int)Math.Ceiling((double)totalItems / ItemNum);
+
+                List<Book> currentPageItems = cartItems.Skip((NowPage - 1) * ItemNum).Take(ItemNum).ToList();
+
+                PaginationInfo paginationInfo = new PaginationInfo
+                {
+                    NowPage = NowPage,
+                    TotalItems = totalItems,
+                    ItemNum = ItemNum,
+                    TotalPages = MaxPage
+                };
+
+                // 返回包含分頁資訊的結果
+                return Ok(new { CartItems = currentPageItems, PaginationInfo = paginationInfo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "發生錯誤：" + ex.Message);
+            }
+        }
+        #endregion
+
+
 
     }
 }
