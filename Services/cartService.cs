@@ -124,7 +124,6 @@ namespace minproject.Services
             string sql = @"SELECT * FROM Book WHERE IsOpen=@IsOpen and Account=@Account";
             try
             {
-                Book Data = new Book();
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@IsOpen", true);
@@ -132,6 +131,7 @@ namespace minproject.Services
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
+                    Book Data = new Book();
                     Data.BookID = Convert.ToInt32(dr["BookID"]);
                     Data.Account = dr["Account"].ToString();
                     Data.LessonID = Convert.ToInt32(dr["LessonID"]);

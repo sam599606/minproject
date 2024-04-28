@@ -7,7 +7,7 @@ using minproject.Models.question;
 using minproject.Services.memberService;
 using minproject.Services.questionService;
 using minproject.ViewModels;
-using minproject.ViewModels.addquestion;
+using minproject.ViewModels.editquestion;
 
 namespace minproject.Controllers.questionController
 {
@@ -25,6 +25,7 @@ namespace minproject.Controllers.questionController
             _memberservice = memberservice;
             account = httpContextAccessor.HttpContext.User.Identity.Name;
         }
+        #region 新增題目
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("import")]
         public IActionResult ImportQuestion([FromForm] IFormFile file)
@@ -56,70 +57,31 @@ namespace minproject.Controllers.questionController
                 return BadRequest("沒有上傳檔案");
             }
         }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateQuestionAsync(addquestion create)
-        {
-            if (create.Image != null)
-            {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(create.Image.FileName);
-                var path = Path.Combine("~/questionimg", fileName);
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await create.Image.CopyToAsync(stream);
-                }
-                create.newquestion.Image = fileName;
-                _questionservice.Insertquestion(this.account, create.questionlist);
-                return Ok("新增成功");
-            }
-            else
-            {
-                _questionservice.Insertquestion(this.account, create.questionlist);
-                return Ok("新增成功");
-            }
-        }
-        // #region 新增題目
-        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
-        // [HttpPost("create")]
-        // public async Task<IActionResult> CreatequestionAsync(addquestion create)
-        // {
-        //     member createmember = _memberservice.GetDataByAccount(create.newquestion.Account);
-        //     if (createmember != null)
-        //     {
-        //         if (create.Image != null)
-        //         {
-        //             var fileName = Guid.NewGuid().ToString() + Path.GetFileName(create.Image.FileName);
-        //             var path = Path.Combine("~/questionimg", fileName);
-        //             using (var stream = new FileStream(path, FileMode.Create))
-        //             {
-        //                 await create.Image.CopyToAsync(stream);
-        //             }
-        //             create.newquestion.Image = fileName;
-        //             _questionservice.Insertquestion(create.newquestion);
-        //             return Ok("新增成功");
-        //         }
-        //         else
-        //         {
-        //             _questionservice.Insertquestion(create.newquestion);
-        //             return Ok("新增成功");
-        //         }
-        //     }
-        //     else
-        //     {
-        //         return BadRequest("無此帳號");
-        //     }
-        // }
-        // #endregion
+        #endregion
         #region 更新題目
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("edit")]
-        public IActionResult Editquestion(question edit)
+        public async Task<IActionResult> Editquestion(editquestion edit)
         {
             if (edit != null)
             {
-                _questionservice.Editquestion(edit);
-                return Ok("更新成功");
+                if (edit.Image != null)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetFileName(edit.Image.FileName);
+                    var path = Path.Combine("~/questionimg", fileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await edit.Image.CopyToAsync(stream);
+                    }
+                    edit.question.Image = fileName;
+                    _questionservice.Editquestion(edit.question);
+                    return Ok("更新成功");
+                }
+                else
+                {
+                    _questionservice.Editquestion(edit.question);
+                    return Ok("更新成功");
+                }
             }
             else
             {
@@ -127,6 +89,22 @@ namespace minproject.Controllers.questionController
             }
         }
         #endregion
+        // #region 更新題目
+        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
+        // [HttpPost("edit")]
+        // public IActionResult Editquestion(question edit)
+        // {
+        //     if (edit != null)
+        //     {
+        //         _questionservice.Editquestion(edit);
+        //         return Ok("更新成功");
+        //     }
+        //     else
+        //     {
+        //         return BadRequest("無此題目");
+        //     }
+        // }
+        // #endregion
         #region 隱藏題目
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("hide")]

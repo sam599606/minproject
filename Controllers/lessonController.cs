@@ -5,6 +5,7 @@ using minproject.Models.lesson;
 using minproject.Models.member;
 using minproject.Services.lessonService;
 using minproject.Services.memberService;
+using minproject.ViewModels.search;
 
 namespace minproject.Controllers.lessonController
 {
@@ -112,6 +113,21 @@ namespace minproject.Controllers.lessonController
             }
         }
         #endregion
-
+        #region 查詢課程
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("SearchLesson")]
+        public IActionResult SearchLessons([FromBody]search search)
+        { 
+            List<lesson> datalist = _lessonservice.Searchlesson(search.Type,search.Year);
+            if (datalist.Count != 0)
+            {
+                return Ok(datalist);
+            }
+            else
+            {
+                return NotFound("沒有課程");
+            }
+        }
+        #endregion
     }
 }

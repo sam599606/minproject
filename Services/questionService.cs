@@ -29,10 +29,9 @@ namespace minproject.Services.questionService
                         Type = int.Parse(worksheet.Cells[row, 1].Value.ToString()),
                         QuestionNum = int.Parse(worksheet.Cells[row, 2].Value.ToString()),
                         Content = worksheet.Cells[row, 3].Value.ToString(),
-                        Image = worksheet.Cells[row, 4].Value.ToString(),
-                        Answer = worksheet.Cells[row, 5].Value.ToString(),
-                        Solution = worksheet.Cells[row, 6].Value.ToString(),
-                        Year = int.Parse(worksheet.Cells[row, 7].Value.ToString())
+                        Answer = worksheet.Cells[row, 4].Value.ToString(),
+                        Solution = worksheet.Cells[row, 5].Value.ToString(),
+                        Year = int.Parse(worksheet.Cells[row, 6].Value.ToString())
                     };
 
                     questions.Add(question);
@@ -44,7 +43,7 @@ namespace minproject.Services.questionService
         #region 新增題目
         public void Insertquestion(string Account,List<question> newquestion)
         {
-            string sql = @"INSERT INTO Questions (Account,Type,QuestionNum,Content,Image,Answer,Solution,Year,CreateTime,IsDelete) VALUES (@Account,@Type,@QuestionNum,@Content,@Image,@Answer,@Solution,@Year,@CreateTime,@IsDelete)";
+            string sql = @"INSERT INTO Questions (Account,Type,QuestionNum,Content,Answer,Solution,Year,CreateTime,IsDelete) VALUES (@Account,@Type,@QuestionNum,@Content,@Answer,@Solution,@Year,@CreateTime,@IsDelete)";
 
             foreach (var data in newquestion)
             {
@@ -56,7 +55,6 @@ namespace minproject.Services.questionService
                     cmd.Parameters.AddWithValue("@Type", data.Type);
                     cmd.Parameters.AddWithValue("@QuestionNum", data.QuestionNum);
                     cmd.Parameters.AddWithValue("@Content", data.Content);
-                    cmd.Parameters.AddWithValue("@Image", data.Image);
                     cmd.Parameters.AddWithValue("@Answer", data.Answer);
                     cmd.Parameters.AddWithValue("@Solution", data.Solution);
                     cmd.Parameters.AddWithValue("@Year", data.Year);
@@ -121,12 +119,11 @@ namespace minproject.Services.questionService
         #region 修改題目
         public void Editquestion(question Editquestion)
         {
-            string sql = @"UPDATE Questions SET Account=@Account,QuestionNum=@QuestionNum,Type=@Type,Content=@Content,Image=@Image,Answer=@Answer,Solution=@Solution,Year=@Year,EditTime=@EditTime WHERE QuestionID = @Id";
+            string sql = @"UPDATE Questions SET QuestionNum=@QuestionNum,Type=@Type,Content=@Content,Image=@Image,Answer=@Answer,Solution=@Solution,Year=@Year,EditTime=@EditTime WHERE QuestionID = @Id";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Account", Editquestion.Account);
                 cmd.Parameters.AddWithValue("@Type", Editquestion.Type);
                 cmd.Parameters.AddWithValue("@QuestionNum", Editquestion.QuestionNum);
                 cmd.Parameters.AddWithValue("@Content", Editquestion.Content);
@@ -176,7 +173,6 @@ namespace minproject.Services.questionService
         {
             List<question> DataList = new List<question>();
             string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year and IsDelete=@IsDelete";
-            question Data = new question();
             try
             {
                 conn.Open();
@@ -187,6 +183,7 @@ namespace minproject.Services.questionService
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
+                                question Data = new question();
                     Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
                     Data.Account = dr["Account"].ToString();
                     Data.Type = Convert.ToInt32(dr["Type"]);

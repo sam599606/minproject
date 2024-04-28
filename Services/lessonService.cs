@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Data.SqlClient;
 using minproject.Models.lesson;
 
@@ -164,7 +165,6 @@ namespace minproject.Services.lessonService
         public List<lesson> GetLessons(string Account)
         {
             List<lesson> lessonlist = new List<lesson>();
-            lesson Data = new lesson();
             string sql = @"SELECT * FROM Lesson Where Account =@Account";
             try
             {
@@ -174,6 +174,7 @@ namespace minproject.Services.lessonService
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
+                    lesson Data = new lesson();
                     Data.LessonID = Convert.ToInt32(dr["LessonID"]);
                     Data.Account = dr["Account"].ToString();
                     Data.Type = Convert.ToInt32(dr["Type"]);
@@ -230,7 +231,6 @@ namespace minproject.Services.lessonService
         {
             List<lesson> lessons = new List<lesson>();
             string sql = "SELECT * FROM Lesson";
-
             try
             {
                 conn.Open();
@@ -265,6 +265,46 @@ namespace minproject.Services.lessonService
             return lessons;
         }
         #endregion
-
+        #region 查詢課程
+        public List<lesson> Searchlesson(int? Type, int? Year)
+        {
+            List<lesson> lessonlist = new List<lesson>();
+            string sql = @"SELECT * FROM Lesson ";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    lesson Data = new lesson();
+                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.Type = Convert.ToInt32(dr["Type"]);
+                    Data.Price = Convert.ToInt32(dr["Price"]);
+                    Data.Content = dr["Content"].ToString();
+                    Data.Video = dr["Video"].ToString();
+                    Data.Year = Convert.ToInt32(dr["Year"]);
+                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                    if (Data.EditTime != null)
+                    {
+                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
+                    }
+                    lessonlist.Add(Data);
+                }
+                if (Type != null) lessonlist = lessonlist.Where(x => x.Type == Type).ToList();
+                if (Year != null) lessonlist = lessonlist.Where(y => y.Year == Year).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return lessonlist;
+        }
+        #endregion
     }
 }
