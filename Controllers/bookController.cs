@@ -90,7 +90,7 @@ namespace minproject.Controllers
         #region 查詢購物車內物品（帶分頁）
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
         [HttpPost("GetCart")]
-        public IActionResult GetCart(int NowPage = 1, int ItemNum = 5)
+        public IActionResult GetCart(ForPaging paging)
         {
             try
             {
@@ -98,15 +98,15 @@ namespace minproject.Controllers
                 cartItems = cartItems.Where(item => item.EndTime == null).ToList();
 
                 int totalItems = cartItems.Count;
-                int MaxPage = (int)Math.Ceiling((double)totalItems / ItemNum);
+                int MaxPage = (int)Math.Ceiling((double)totalItems / paging.ItemNum);
 
-                List<Book> currentPageItems = cartItems.Skip((NowPage - 1) * ItemNum).Take(ItemNum).ToList();
+                List<Book> currentPageItems = cartItems.Skip((paging.NowPage - 1) * paging.ItemNum).Take(paging.ItemNum).ToList();
 
                 PaginationInfo paginationInfo = new PaginationInfo
                 {
-                    NowPage = NowPage,
+                    NowPage = paging.NowPage,
                     TotalItems = totalItems,
-                    ItemNum = ItemNum,
+                    ItemNum = paging.ItemNum,
                     TotalPages = MaxPage
                 };
 

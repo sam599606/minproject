@@ -1399,3 +1399,6 @@ C:\Users\sam59\Desktop\new\minproject\obj\Debug\net7.0\refint\minproject.dll
 C:\Users\sam59\Desktop\new\minproject\obj\Debug\net7.0\minproject.pdb
 C:\Users\sam59\Desktop\new\minproject\obj\Debug\net7.0\minproject.genruntimeconfig.cache
 C:\Users\sam59\Desktop\new\minproject\obj\Debug\net7.0\ref\minproject.dll
+C:\Users\sam59\Desktop\minproject\bin\Debug\net7.0\EPPlus.dll
+C:\Users\sam59\Desktop\minproject\bin\Debug\net7.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\sam59\Desktop\minproject\bin\Debug\net7.0\System.Xml.XPath.XmlDocument.dll
