@@ -45,7 +45,8 @@ namespace minproject.Controllers.lessonController
         [HttpPost("edit")]
         public IActionResult Editlesson(lesson edit)
         {
-            if (edit != null)
+            lesson data = _lessonservice.GetDataById(edit.LessonID);
+            if (data != null)
             {
                 bool isExist = _lessonservice.CheckExistingLesson(edit.Type ?? 0, edit.Year ?? 0, this.account);
                 if (isExist)
@@ -68,7 +69,8 @@ namespace minproject.Controllers.lessonController
         [HttpPost("delete")]
         public IActionResult Deletelesson(lesson delete)
         {
-            if (delete != null)
+            lesson data = _lessonservice.GetDataById(delete.LessonID);
+            if (data != null)
             {
                 _lessonservice.Deletelesson(delete.LessonID);
                 return Ok("刪除成功");
@@ -116,9 +118,9 @@ namespace minproject.Controllers.lessonController
         #region 查詢課程
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("SearchLesson")]
-        public IActionResult SearchLessons([FromBody]search search)
-        { 
-            List<lesson> datalist = _lessonservice.Searchlesson(search.Type,search.Year);
+        public IActionResult SearchLessons([FromBody] search search)
+        {
+            List<lesson> datalist = _lessonservice.Searchlesson(search.Type, search.Year);
             if (datalist.Count != 0)
             {
                 return Ok(datalist);

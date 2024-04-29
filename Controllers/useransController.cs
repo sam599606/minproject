@@ -50,10 +50,11 @@ namespace minproject.Controllers.useransController
         [HttpPost("edit")]
         public IActionResult Edituserans(userans edit)
         {
-            question editquestion = _questionservice.GetDataById(edit.QuestionID);
-            if (editquestion != null)
+            question que = _questionservice.GetDataById(edit.QuestionID);
+            userans ans = _useransservice.GetDataById(edit.UserAnsID);
+            if (que != null)
             {
-                if (edit != null)
+                if (ans != null)
                 {
                     _useransservice.Editans(edit);
                     return Ok("更新成功");
@@ -103,6 +104,6 @@ namespace minproject.Controllers.useransController
             return Ok(score);
         }
         #endregion
-        
+
     }
 }

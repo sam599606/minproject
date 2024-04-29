@@ -63,7 +63,8 @@ namespace minproject.Controllers.questionController
         [HttpPost("edit")]
         public async Task<IActionResult> Editquestion(editquestion edit)
         {
-            if (edit != null)
+            question data = _questionservice.GetDataById(edit.question.QuestionID);
+            if (data != null)
             {
                 if (edit.Image != null)
                 {
@@ -110,7 +111,8 @@ namespace minproject.Controllers.questionController
         [HttpPost("hide")]
         public IActionResult Hidequestion(question hide)
         {
-            if (hide != null)
+            question data = _questionservice.GetDataById(hide.QuestionID);
+            if (data != null)
             {
                 _questionservice.Hidequestion(hide.QuestionID);
                 return Ok("隱藏成功");

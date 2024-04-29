@@ -40,7 +40,8 @@ namespace minproject.Controllers
         [HttpPost("RemoveFromCart")]
         public IActionResult RemoveFromCart(Book remove)
         {
-            if (remove != null)
+            Book data = _cartService.GetDataById(remove.BookID);
+            if (data != null)
             {
                 _cartService.RemoveFromCart(remove.BookID);
                 return Ok("已從購物車中移除課程");
