@@ -153,17 +153,18 @@ namespace minproject.Services
         }
         #endregion
 
-        #region 獲取購物車內未結單物品
+        #region 獲取購物清單
         public List<Book> GetCartItems(string account)
         {
             List<Book> cartItems = new List<Book>();
-            string sql = @"SELECT * FROM Book WHERE Account = @Account AND EndTime IS NULL";
+            string sql = @"SELECT * FROM Book WHERE Account = @Account AND IsOpen = @IsOpen";
 
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Account", account);
+                cmd.Parameters.AddWithValue("@IsOpen", false);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
