@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\emma9\\OneDrive\\桌面\\minproject\\minproject.csproj": {}
+    "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\emma9\\OneDrive\\桌面\\minproject\\minproject.csproj": {
+    "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\emma9\\OneDrive\\桌面\\minproject\\minproject.csproj",
+        "projectUniqueName": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj",
         "projectName": "minproject",
-        "projectPath": "C:\\Users\\emma9\\OneDrive\\桌面\\minproject\\minproject.csproj",
-        "packagesPath": "C:\\Users\\emma9\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\emma9\\OneDrive\\桌面\\minproject\\obj\\",
+        "projectPath": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj",
+        "packagesPath": "C:\\Users\\speci\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\emma9\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\speci\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -38,6 +34,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -100,6 +101,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -108,7 +127,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }
