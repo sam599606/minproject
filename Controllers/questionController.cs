@@ -63,7 +63,8 @@ namespace minproject.Controllers.questionController
         [HttpPost("edit")]
         public async Task<IActionResult> Editquestion(editquestion edit)
         {
-            if (edit != null)
+            question data = _questionservice.GetDataById(edit.question.QuestionID);
+            if (data != null)
             {
                 if (edit.Image != null)
                 {
@@ -110,7 +111,8 @@ namespace minproject.Controllers.questionController
         [HttpPost("hide")]
         public IActionResult Hidequestion(question hide)
         {
-            if (hide != null)
+            question data = _questionservice.GetDataById(hide.QuestionID);
+            if (data != null)
             {
                 _questionservice.Hidequestion(hide.QuestionID);
                 return Ok("隱藏成功");
@@ -137,5 +139,23 @@ namespace minproject.Controllers.questionController
             }
         }
         #endregion
+
+        #region  透過科目年份取得試卷
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("AllQuiz")]
+        public IActionResult GetAllQuiz([FromBody] question quiz)
+        {
+            List<question> datalist = _questionservice.GetAllQuiz(quiz);
+            if (datalist != null)
+            {
+                return Ok(datalist);
+            }
+            else
+            {
+                return BadRequest("沒有題目");
+            }
+        }
+        #endregion
+
     }
 }
