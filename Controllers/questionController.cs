@@ -140,7 +140,7 @@ namespace minproject.Controllers.questionController
         }
         #endregion
 
-        #region  透過科目年份取得試卷
+        #region  取得試卷
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("AllQuiz")]
         public IActionResult GetAllQuiz([FromBody] question quiz)

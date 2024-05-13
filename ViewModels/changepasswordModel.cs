@@ -6,7 +6,7 @@ namespace minproject.ViewModels.changepasswordModel
 {
     public class changepasswordModel
     {
-        public string Account{get;set;}
+        public string Account { get; set; }
         [DisplayName("舊密碼")]
         public string Password { get; set; }
         [DisplayName("新密碼")]
