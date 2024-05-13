@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj": {}
+    "c:\\Users\\sam59\\Desktop\\會考會考_線上測驗暨課程平台\\minproject\\minproject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj": {
+    "c:\\Users\\sam59\\Desktop\\會考會考_線上測驗暨課程平台\\minproject\\minproject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj",
+        "projectUniqueName": "c:\\Users\\sam59\\Desktop\\會考會考_線上測驗暨課程平台\\minproject\\minproject.csproj",
         "projectName": "minproject",
-        "projectPath": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj",
-        "packagesPath": "C:\\Users\\speci\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\obj\\",
+        "projectPath": "c:\\Users\\sam59\\Desktop\\會考會考_線上測驗暨課程平台\\minproject\\minproject.csproj",
+        "packagesPath": "C:\\Users\\sam59\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\sam59\\Desktop\\會考會考_線上測驗暨課程平台\\minproject\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\speci\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sam59\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

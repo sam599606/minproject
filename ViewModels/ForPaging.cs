@@ -7,7 +7,7 @@ namespace minproject.ViewModels
 {
     public class ForPaging
     {
-        public int NowPage = 1;
-        public int ItemNum = 5;
+        public int NowPage { get; set; }
+        public int ItemNum { get; set; }
     }
 }

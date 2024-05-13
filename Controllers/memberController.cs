@@ -153,6 +153,7 @@ namespace minproject.Controllers.memberController
             }
         }
         #endregion
+
         [AllowAnonymous]
         [HttpPost("forgetpassword")]
         #region 忘記密碼
