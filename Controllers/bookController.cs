@@ -65,7 +65,6 @@ namespace minproject.Controllers
             else
             {
                 return BadRequest("尚未選擇課程");
-
             }
         }
         #endregion

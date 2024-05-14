@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using minproject.Models;
 using minproject.Models.lesson;
 using minproject.Models.member;
 using minproject.Models.question;
@@ -41,6 +42,46 @@ namespace minproject.Services.useransService
             }
         }
         #endregion
+
+        #region 新增答案和考試紀錄
+        public void InsertExamRecord(userans newans, string Account)
+        {
+            ExamHistory newExam = new ExamHistory
+            {
+                Account = Account,
+                ExamDate = DateTime.Now,
+                Score = 0
+            };
+
+            // 新增考試紀錄到資料庫
+            //            int examId = _examHistoryService.Insert(newExam);
+
+            //            InsertUserAnswer(newans, examId);
+        }
+
+        private void InsertUserAnswer(userans newans, int examId)
+        {
+            string sql = @"INSERT INTO UserAnswer (ExamHistoryID, QuestionID, UserAnswer) VALUES (@ExamHistoryID, @QuestionID, @UserAnswer)";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ExamHistoryID", examId); // 使用考試紀錄的 ID
+                cmd.Parameters.AddWithValue("@QuestionID", newans.QuestionID);
+                cmd.Parameters.AddWithValue("@UserAnswer", newans.UserAnswer);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        #endregion
+
         #region 查一筆資料
         public userans GetDataById(int Id)
         {
@@ -56,7 +97,7 @@ namespace minproject.Services.useransService
                 {
                     Data.UserAnsID = Convert.ToInt32(dr["UserAnsID"]);
                     Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
-                    Data.Account = dr["Account"].ToString();
+                    //                    Data.Account = dr["Account"].ToString();
                     Data.UserAnswer = dr["UserAnswer"].ToString();
 
                 }
@@ -160,7 +201,7 @@ namespace minproject.Services.useransService
                 {
                     Data.UserAnsID = Convert.ToInt32(dr["UserAnsID"]);
                     Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
-                    Data.Account = dr["Account"].ToString();
+                    //                    Data.Account = dr["Account"].ToString();
                     Data.UserAnswer = dr["UserAnswer"].ToString();
                     Data.TrueorFlase = Convert.ToBoolean(dr["TrueorFlase"]);
                     datalist.Add(Data);
