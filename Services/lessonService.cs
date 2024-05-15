@@ -306,5 +306,87 @@ namespace minproject.Services.lessonService
             return lessonlist;
         }
         #endregion
+        #region 熱門課程
+        public List<lesson> GetHotLesson()
+        {
+            List<lesson> lessons = new List<lesson>();
+            string sql = "SELECT TOP 3 l.*, COUNT(*) AS booknum FROM Lesson l INNER JOIN Book b ON l.LessonID = b.LessonID WHERE b.IsOpen = @IsOpen GROUP BY l.LessonID,l.Account,l.Type,l.Price,l.Content,l.Video,l.Year,l.CreateTime,l.EditTime";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@IsOpen", true);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    lesson Data = new lesson();
+                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.Type = Convert.ToInt32(dr["Type"]);
+                    Data.Price = Convert.ToInt32(dr["Price"]);
+                    Data.Content = dr["Content"].ToString();
+                    Data.Video = dr["Video"].ToString();
+                    Data.Year = Convert.ToInt32(dr["Year"]);
+                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                    if (Data.EditTime != null)
+                    {
+                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
+                    }
+                    lessons.Add(Data);
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return lessons;
+        }
+        #endregion
+        #region 熱門老師
+        public List<lesson> GetHoTeacher()
+        {
+            List<lesson> lessons = new List<lesson>();
+            string sql = "SELECT TOP 3 l.*, COUNT(*) AS booknum FROM Lesson l INNER JOIN Book b ON l.LessonID = b.LessonID WHERE b.IsOpen = @IsOpen AND GROUP BY l.LessonID,l.Account,l.Type,l.Price,l.Content,l.Video,l.Year,l.CreateTime,l.EditTime";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@IsOpen", true);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    lesson Data = new lesson();
+                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.Type = Convert.ToInt32(dr["Type"]);
+                    Data.Price = Convert.ToInt32(dr["Price"]);
+                    Data.Content = dr["Content"].ToString();
+                    Data.Video = dr["Video"].ToString();
+                    Data.Year = Convert.ToInt32(dr["Year"]);
+                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                    if (Data.EditTime != null)
+                    {
+                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
+                    }
+                    lessons.Add(Data);
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return lessons;
+        }
+        #endregion
     }
 }

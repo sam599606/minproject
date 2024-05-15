@@ -96,7 +96,6 @@ namespace minproject.Controllers
             {
                 List<Book> cartItems = _cartService.GetCartItems(this.account);
                 cartItems = cartItems.Where(item => item.EndTime == null).ToList();
-
                 int totalItems = cartItems.Count;
                 int MaxPage = (int)Math.Ceiling((double)totalItems / ItemNum);
 

@@ -139,5 +139,23 @@ namespace minproject.Controllers.questionController
             }
         }
         #endregion
+
+        #region  取得試卷
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("AllQuiz")]
+        public IActionResult GetAllQuiz([FromBody] question quiz)
+        {
+            List<question> datalist = _questionservice.GetAllQuiz(quiz);
+            if (datalist != null)
+            {
+                return Ok(datalist);
+            }
+            else
+            {
+                return BadRequest("沒有題目");
+            }
+        }
+        #endregion
+
     }
 }

@@ -36,7 +36,7 @@ namespace minproject.Controllers.useransController
             question createquestion = _questionservice.GetDataById(create.QuestionID);
             if (createquestion != null)
             {
-                _useransservice.Insertans(create, this.account);
+                _useransservice.InsertExamRecord(create, this.account);
                 return Ok("新增成功");
             }
             else
@@ -103,6 +103,15 @@ namespace minproject.Controllers.useransController
             int score = _useransservice.GetScore(this.account);
             return Ok(score);
         }
+        #endregion
+
+        #region 新增考試紀錄
+        #endregion
+
+        #region 查詢考試歷史紀錄
+        #endregion
+
+        #region 查詢考試詳細資訊
         #endregion
 
     }

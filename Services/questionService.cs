@@ -213,5 +213,49 @@ namespace minproject.Services.questionService
             return DataList;
         }
         #endregion
+
+        #region 取得全部試卷
+        public List<question> GetAllQuiz(question quiz)
+        {
+            List<question> DataList = new List<question>();
+            string sql = @"SELECT * FROM Questions WHERE IsDelete=@IsDelete";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@IsDelete", false);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    question Data = new question();
+                    Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.Type = Convert.ToInt32(dr["Type"]);
+                    Data.QuestionNum = Convert.ToInt32(dr["QuestionNum"]);
+                    Data.Content = dr["Content"].ToString();
+                    Data.Image = dr["Image"].ToString();
+                    Data.Answer = dr["Answer"].ToString();
+                    Data.Solution = dr["Solution"].ToString();
+                    Data.Year = Convert.ToInt32(dr["Year"]);
+                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                    if (Data.EditTime != null)
+                    {
+                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
+                    }
+                    Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
+                    DataList.Add(Data);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return DataList;
+        }
+        #endregion
     }
 }

@@ -131,5 +131,37 @@ namespace minproject.Controllers.lessonController
             }
         }
         #endregion
+        #region 熱門課程
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
+        [HttpPost("GetHotLesson")]
+        public IActionResult GetHotLessons()
+        {
+            List<lesson> datalist = _lessonservice.GetHotLesson();
+            if (datalist != null)
+            {
+                return Ok(datalist);
+            }
+            else
+            {
+                return NotFound("沒有課程");
+            }
+        }
+        #endregion
+                #region 熱門課程
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
+        [HttpPost("GetHotTeacher")]
+        public IActionResult GetHotTeacher()
+        {
+            List<lesson> datalist = _lessonservice.GetHotLesson();
+            if (datalist != null)
+            {
+                return Ok(datalist);
+            }
+            else
+            {
+                return NotFound("沒有課程");
+            }
+        }
+        #endregion
     }
 }
