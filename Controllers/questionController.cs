@@ -61,8 +61,10 @@ namespace minproject.Controllers.questionController
         #region 更新題目
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
         [HttpPost("edit")]
-        public async Task<IActionResult> Editquestion(editquestion edit)
+        public async Task<IActionResult> Editquestion([FromBody] editquestion edit)
         {
+            Console.Write("rgsreg");
+            Console.WriteLine(edit);
             question data = _questionservice.GetDataById(edit.question.QuestionID);
             if (data != null)
             {
@@ -140,7 +142,7 @@ namespace minproject.Controllers.questionController
         }
         #endregion
 
-        #region  取得試卷
+        #region  取得全部試卷
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("AllQuiz")]
         public IActionResult GetAllQuiz([FromBody] question quiz)

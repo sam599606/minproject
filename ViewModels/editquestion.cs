@@ -6,7 +6,7 @@ namespace minproject.ViewModels.editquestion
 {
     public class editquestion
     {
-        public List<question> questionlist{get;set;}
+        //public List<question> questionlist{get;set;}
         [DisplayName("題目")]
         public question question { get; set; }
         [DisplayName("題目圖片")]

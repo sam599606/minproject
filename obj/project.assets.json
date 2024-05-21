@@ -13953,12 +13953,6 @@
   },
   "logs": [
     {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "讀取快取檔案 C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\obj\\project.nuget.cache 時發生問題: Invalid property identifier character: <. Path 'version', line 3, position 0."
-    },
-    {
       "code": "NU1903",
       "level": "Warning",
       "warningLevel": 1,
