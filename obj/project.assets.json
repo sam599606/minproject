@@ -13827,11 +13827,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj",
+      "projectUniqueName": "C:\\Users\\speci\\OneDrive\\Desktop\\BACK\\minproject\\minproject.csproj",
       "projectName": "minproject",
-      "projectPath": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\minproject.csproj",
+      "projectPath": "C:\\Users\\speci\\OneDrive\\Desktop\\BACK\\minproject\\minproject.csproj",
       "packagesPath": "C:\\Users\\speci\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\speci\\OneDrive\\Desktop\\back\\minproject\\obj\\",
+      "outputPath": "C:\\Users\\speci\\OneDrive\\Desktop\\BACK\\minproject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\speci\\AppData\\Roaming\\NuGet\\NuGet.Config",

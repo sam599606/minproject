@@ -41,7 +41,7 @@ namespace minproject.Controllers
         public IActionResult RemoveFromCart(Book remove)
         {
             Book data = _cartService.GetDataById(remove.BookID);
-            if (data == null)
+            if (data != null)
             {
                 _cartService.RemoveFromCart(remove.BookID);
                 return Ok("已從購物車中移除課程");
@@ -90,23 +90,22 @@ namespace minproject.Controllers
         #region 查詢購物車內物品（帶分頁）
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
         [HttpPost("GetCart")]
-        public IActionResult GetCart(ForPaging paging)
+        public IActionResult GetCart(int NowPage = 1, int ItemNum = 5)
         {
             try
             {
                 List<Book> cartItems = _cartService.GetCartItems(this.account);
                 cartItems = cartItems.Where(item => item.EndTime == null).ToList();
-
                 int totalItems = cartItems.Count;
-                int MaxPage = (int)Math.Ceiling((double)totalItems / paging.ItemNum);
+                int MaxPage = (int)Math.Ceiling((double)totalItems / ItemNum);
 
-                List<Book> currentPageItems = cartItems.Skip((paging.NowPage - 1) * paging.ItemNum).Take(paging.ItemNum).ToList();
+                List<Book> currentPageItems = cartItems.Skip((NowPage - 1) * ItemNum).Take(ItemNum).ToList();
 
                 PaginationInfo paginationInfo = new PaginationInfo
                 {
-                    NowPage = paging.NowPage,
+                    NowPage = NowPage,
                     TotalItems = totalItems,
-                    ItemNum = paging.ItemNum,
+                    ItemNum = ItemNum,
                     TotalPages = MaxPage
                 };
 

@@ -257,5 +257,75 @@ namespace minproject.Services.questionService
             return DataList;
         }
         #endregion
+
+
+        #region 透過科目年分取得 隱藏 試卷
+        public List<question> GetHideQuiz(question quiz)
+        {
+            List<question> DataList = new List<question>();
+            string sql = @"SELECT * FROM Questions WHERE Type = @Type and Year = @Year and IsDelete=@IsDelete";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Type", quiz.Type);
+                cmd.Parameters.AddWithValue("@Year", quiz.Year);
+                cmd.Parameters.AddWithValue("@IsDelete", true);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                                question Data = new question();
+                    Data.QuestionID = Convert.ToInt32(dr["QuestionID"]);
+                    Data.Account = dr["Account"].ToString();
+                    Data.Type = Convert.ToInt32(dr["Type"]);
+                    Data.QuestionNum = Convert.ToInt32(dr["QuestionNum"]);
+                    Data.Content = dr["Content"].ToString();
+                    Data.Image = dr["Image"].ToString();
+                    Data.Answer = dr["Answer"].ToString();
+                    Data.Solution = dr["Solution"].ToString();
+                    Data.Year = Convert.ToInt32(dr["Year"]);
+                    Data.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                    if (Data.EditTime != null)
+                    {
+                        Data.EditTime = Convert.ToDateTime(dr["EditTime"]);
+                    }
+                    Data.IsDelete = Convert.ToBoolean(dr["IsDelete"]);
+                    DataList.Add(Data);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return DataList;
+        }
+        #endregion
+
+        #region 開啟隱藏題目
+        public void UnHidequestion(int Id)
+        {
+            string sql = @"UPDATE Questions SET IsDelete=@IsDelete WHERE QuestionID = @Id";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", Id);
+                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        #endregion
     }
 }

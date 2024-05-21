@@ -159,5 +159,40 @@ namespace minproject.Controllers.questionController
         }
         #endregion
 
+        #region  取得隱藏試卷
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("AllHideQuiz")]
+        public IActionResult GetAllHideQuiz([FromBody] question quiz)
+        {
+            List<question> datalist = _questionservice.GetHideQuiz(quiz);
+            if (datalist != null)
+            {
+                return Ok(datalist);
+            }
+            else
+            {
+                return BadRequest("沒有題目");
+            }
+        }
+        #endregion
+
+        #region 開啟隱藏題目
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "teacher")]
+        [HttpPost("Gethide")]
+        public IActionResult UnHidequestion(question hide)
+        {
+            question data = _questionservice.GetDataById(hide.QuestionID);
+            if (data != null)
+            {
+                _questionservice.UnHidequestion(hide.QuestionID);
+                return Ok("隱藏成功");
+            }
+            else
+            {
+                return BadRequest("無此題目");
+            }
+        }
+        #endregion
+
     }
 }
