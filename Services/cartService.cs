@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using minproject.Models;
 using minproject.ViewModels;
+using OfficeOpenXml.Drawing.Chart;
 
 namespace minproject.Services
 {
@@ -43,7 +44,7 @@ namespace minproject.Services
         #region 查一筆訂單
         public Book GetDataById(int Id)
         {
-            Book Data = new Book();
+            Book Data = null;
             string sql = @"SELECT * FROM Book m inner join Lesson d on m.LessonID = d.LessonID WHERE BookID = @Id";
             try
             {
@@ -53,15 +54,18 @@ namespace minproject.Services
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    Data.BookID = Convert.ToInt32(dr["BookID"]);
-                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
-                    Data.StartTime = Convert.ToDateTime(dr["StartTime"]);
-                    Data.EndTime = Convert.ToDateTime(dr["EndTime"]);
+                    Data = new Book
+                    {
+                    BookID = Convert.ToInt32(dr["BookID"]),
+                    LessonID = Convert.ToInt32(dr["LessonID"]),
+                    StartTime = dr["StartTime"] != DBNull.Value ? Convert.ToDateTime(dr["StartTime"]) : DateTime.MinValue,
+                    EndTime = dr["EndTime"] != DBNull.Value ? Convert.ToDateTime(dr["EndTime"]) : DateTime.MinValue
+                    };
                 }
             }
             catch (Exception e)
             {
-                Data = null;
+                throw new Exception(e.Message.ToString());
             }
             finally
             {
