@@ -59,8 +59,15 @@ namespace minproject.Controllers
         {
             if (order != null)
             {
+                try{
+                Console.WriteLine($"Processing order for BookID: {order.BookID}");
                 _cartService.OrdersToBook(order.BookID);
                 return Ok("已購買課程，現在可以開始上課了");
+                }
+                catch (Exception e){
+                    Console.WriteLine($"Order processing failed for BookID: {order.BookID}. Error: {e.Message}");
+                    return StatusCode(500, "An error occurred while processing your order.");
+                }
             }
             else
             {
