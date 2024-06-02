@@ -234,26 +234,118 @@ namespace minproject.Services.useransService
         }
         #endregion
 
-        // #region 清空資料
-        // public void ClearUserAnswers()
-        // {
-        //     string sql = @"DELETE FROM UserAnswer";
+        #region 新增考試紀錄及答案
 
-        //     try
-        //     {
-        //         conn.Open();
-        //         SqlCommand cmd = new SqlCommand(sql, conn);
-        //         cmd.ExecuteNonQuery();
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         throw new Exception(e.Message.ToString());
-        //     }
-        //     finally
-        //     {
-        //         conn.Close();
-        //     }
-        // }
-        // #endregion
+        public void InsertExamRecord(List<userans> answers, string account, int score)
+        {
+            string insertExamHistorySql = @"INSERT INTO ExamHistory (Account, ExamDate, Score) VALUES (@Account, @ExamDate, @Score); SELECT SCOPE_IDENTITY();";
+            string insertUserAnswerSql = @"INSERT INTO UserAnswer (ExamHistoryID, QuestionID, UserAnswer, TrueorFlase) VALUES (@ExamHistoryID, @QuestionID, @UserAnswer, @TrueorFlase)";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(insertExamHistorySql, conn);
+                cmd.Parameters.AddWithValue("@Account", account);
+                cmd.Parameters.AddWithValue("@ExamDate", DateTime.Now);
+                cmd.Parameters.AddWithValue("@Score", score);
+
+                int examHistoryId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                foreach (var answer in answers)
+                {
+                    cmd = new SqlCommand(insertUserAnswerSql, conn);
+                    cmd.Parameters.AddWithValue("@ExamHistoryID", examHistoryId);
+                    cmd.Parameters.AddWithValue("@QuestionID", answer.QuestionID);
+                    cmd.Parameters.AddWithValue("@UserAnswer", answer.UserAnswer);
+                    cmd.Parameters.AddWithValue("@TrueorFlase", answer.TrueorFlase);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        #endregion
+
+        #region 查詢考試歷史
+
+        public List<ExamHistory> GetExamHistory(string account)
+        {
+            List<ExamHistory> examHistoryList = new List<ExamHistory>();
+            string sql = @"SELECT * FROM ExamHistory WHERE Account = @Account";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Account", account);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    ExamHistory examHistory = new ExamHistory
+                    {
+                        ExamHistoryID = Convert.ToInt32(dr["ExamHistoryID"]),
+                        Account = dr["Account"].ToString(),
+                        ExamDate = Convert.ToDateTime(dr["ExamDate"]),
+                        Score = Convert.ToInt32(dr["Score"])
+                    };
+                    examHistoryList.Add(examHistory);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return examHistoryList;
+        }
+        #endregion
+        #region 查詢考試詳細資訊
+
+        public List<userans> GetExamDetails(int examHistoryId)
+        {
+            List<userans> userAnswers = new List<userans>();
+            string sql = @"SELECT * FROM UserAnswer WHERE ExamHistoryID = @ExamHistoryID";
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ExamHistoryID", examHistoryId);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    userans answer = new userans
+                    {
+                        UserAnsID = Convert.ToInt32(dr["UserAnsID"]),
+                        ExamHistoryID = Convert.ToInt32(dr["ExamHistoryID"]),
+                        QuestionID = Convert.ToInt32(dr["QuestionID"]),
+                        UserAnswer = dr["UserAnswer"].ToString(),
+                        TrueorFlase = Convert.ToBoolean(dr["TrueorFlase"])
+                    };
+                    userAnswers.Add(answer);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return userAnswers;
+        }
+        #endregion
     }
 }

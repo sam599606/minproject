@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using minproject.Models;
 using minproject.Models.member;
 using minproject.Models.question;
 using minproject.Models.userans;
@@ -26,8 +27,8 @@ namespace minproject.Controllers.useransController
             _questionservice = questionservice;
             _memberservice = memberservice;
             account = httpContextAccessor.HttpContext.User.Identity.Name;
-
         }
+
         #region 新增答案
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
         [HttpPost("create")]
@@ -106,12 +107,63 @@ namespace minproject.Controllers.useransController
         #endregion
 
         #region 新增考試紀錄
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpPost("CreateExamRecord")]
+        public IActionResult CreateExamRecord([FromBody] List<userans> answers)
+        {
+            if (answers == null || !answers.Any())
+            {
+                return BadRequest("答案不可為空");
+            }
+
+            int totalScore = 0;
+            foreach (var answer in answers)
+            {
+                question question = _questionservice.GetDataById(answer.QuestionID);
+                if (question == null)
+                {
+                    return BadRequest($"無此題目 ID: {answer.QuestionID}");
+                }
+
+                // Calculate score (example: 1 point for each correct answer)
+                if (answer.TrueorFlase == true)
+                {
+                    totalScore += 1;
+                }
+            }
+
+            _useransservice.InsertExamRecord(answers, this.account, totalScore);
+            return Ok("新增考試紀錄成功");
+        }
         #endregion
 
         #region 查詢考試歷史紀錄
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpGet("GetExamHistory")]
+        public IActionResult GetExamHistory()
+        {
+            List<ExamHistory> examHistory = _useransservice.GetExamHistory(this.account);
+            if (examHistory == null || !examHistory.Any())
+            {
+                return NotFound("沒有考試紀錄");
+            }
+
+            return Ok(examHistory);
+        }
         #endregion
 
         #region 查詢考試詳細資訊
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "student")]
+        [HttpGet("GetExamDetails/{examHistoryId}")]
+        public IActionResult GetExamDetails(int examHistoryId)
+        {
+            List<userans> examDetails = _useransservice.GetExamDetails(examHistoryId);
+            if (examDetails == null || !examDetails.Any())
+            {
+                return NotFound("沒有找到該考試的詳細資訊");
+            }
+            return Ok(examDetails);
+        }
         #endregion
 
     }

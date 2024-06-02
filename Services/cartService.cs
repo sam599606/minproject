@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using minproject.Models;
+using minproject.Models.lesson;
 using minproject.ViewModels;
 using OfficeOpenXml.Drawing.Chart;
 
@@ -122,10 +123,13 @@ namespace minproject.Services
         }
         #endregion
         #region 查詢已購買課程
-        public List<Book> GetBooks(Book order, string Account)
+        public List<Bought> GetBooks(Book order, string Account)
         {
-            List<Book> DataList = new List<Book>();
-            string sql = @"SELECT * FROM Book WHERE IsOpen=@IsOpen and Account=@Account";
+            List<Bought> DataList = new List<Bought>();
+            string sql = 
+            @"SELECT Lesson.Type,Lesson.Content,Lesson.Year,Lesson.Video,Book.StartTime,Book.EndTime
+            FROM Book
+            inner join Lesson on Book.LessonID = Lesson.LessonID WHERE Book.IsOpen=@IsOpen and Book.Account=@Account";
             try
             {
                 conn.Open();
@@ -135,13 +139,13 @@ namespace minproject.Services
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    Book Data = new Book();
-                    Data.BookID = Convert.ToInt32(dr["BookID"]);
-                    Data.Account = dr["Account"].ToString();
-                    Data.LessonID = Convert.ToInt32(dr["LessonID"]);
-                    Data.StartTime = Convert.ToDateTime(dr["StartTime"]);
-                    Data.EndTime = Convert.ToDateTime(dr["EndTime"]);
-                    Data.IsOpen = Convert.ToBoolean(dr["IsOpen"]);
+                    Bought Data = new Bought();
+                    Data.StartTime = dr["StartTime"] != DBNull.Value ? (DateTime?)dr["StartTime"] : null;
+                        Data.EndTime = dr["EndTime"] != DBNull.Value ? (DateTime?)dr["EndTime"] : null;
+                        Data.Type = dr["Type"] != DBNull.Value ? (int?)dr["Type"] : null;
+                        Data.Content = dr["Content"] != DBNull.Value ? dr["Content"].ToString() : null;
+                        Data.Video = dr["Video"] != DBNull.Value ? dr["Video"].ToString() : null;
+                        Data.Year = dr["Year"] != DBNull.Value ? (int?)dr["Year"] : null;
                     DataList.Add(Data);
                 }
             }

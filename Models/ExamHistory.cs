@@ -8,7 +8,7 @@ namespace minproject.Models
 {
     public class ExamHistory
     {
-        [DisplayName("考試ID")] //主鍵，自動增加
+        [DisplayName("考試ID")]
         public int ExamHistoryID { get; set; }
 
         public string Account { get; set; }

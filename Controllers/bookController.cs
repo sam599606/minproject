@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using minproject.Models;
+using minproject.Models.lesson;
 using minproject.Models.member;
 using minproject.Services;
 using minproject.Services.memberService;
@@ -82,7 +83,7 @@ namespace minproject.Controllers
         [HttpPost("GetBooks")]
         public IActionResult GetBooks([FromBody] Book order)
         {
-            List<Book> datalist = _cartService.GetBooks(order, this.account);
+            List<Bought> datalist = _cartService.GetBooks(order, this.account);
             if (datalist != null)
             {
                 return Ok(datalist);
